@@ -4,13 +4,17 @@
 
 import javax.crypto.*;
 import javax.crypto.spec.*;
-
-/*importar generador de vectores de inicializacion de java para elementos de seguridad */
 import java.security.spec.AlgorithmParameterSpec;
+
 public class prueba {
-	
+	/*crear vector de inicializacion aleatorio con java.security*/
+
+	/*guardar el iv en el archivo cifrado */
+
 	public static int main (String args[]){	
 		try {
+			kkkkkkkk
+
 			SecretKey key = KeyGenerator.getInstance("DES").generateKey();
 			AlgorithmParameterSpec paramSpec = new IvParameterSpec(new byte[8]);
 			
@@ -22,6 +26,7 @@ public class prueba {
 		} catch (Exception e) {
 			e.printStackTrace(); 
 		}
+
 		return 0;
 	}
 
