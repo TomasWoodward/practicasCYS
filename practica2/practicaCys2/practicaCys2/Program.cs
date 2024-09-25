@@ -5,15 +5,16 @@ using System.IO.Compression;
 using System.Security.Cryptography;
 using System;
 using System.IO;
+using Microsoft.VisualBasic.ApplicationServices;
 using System.Windows.Forms;
 
-namespace practicaCys
+namespace practicaCys2
 {
     internal static class Program
     {
-        /// <summary>  
-        ///  The main entry point for the application.  
-        /// </summary>  
+        /// <summary>
+        ///  The main entry point for the application.
+        /// </summary>
         [STAThread]
         static void Main()
         {
@@ -26,7 +27,7 @@ namespace practicaCys
 
             compressAndEncrypt compresor = new compressAndEncrypt();
 
-            // Llamar al m√©todo EncryptAes con los datos generados  
+            // Llamar al mÈtodo EncryptAes con los datos generados  
             compresor.EncryptAes(new byte[0], key, iv);
 
             // To customize application configuration such as set high DPI settings or default font,  
@@ -115,7 +116,7 @@ namespace practicaCys
 
                 }
 
-                Console.WriteLine("Archivo comprimido con √©xito.");
+                Console.WriteLine("Archivo comprimido con Èxito.");
             }
             catch (Exception ex)
             {
@@ -175,7 +176,7 @@ namespace practicaCys
                     // Abrir el archivo .zip en memoria
                     using (ZipArchive zip = new ZipArchive(memoryStream, ZipArchiveMode.Read))
                     {
-                        // Obtener la primera entrada del .zip (puedes adaptar esto si hay m√°s de una entrada)
+                        // Obtener la primera entrada del .zip (puedes adaptar esto si hay m·s de una entrada)
                         ZipArchiveEntry zipEntry = zip.Entries[0];
 
                         // Abrir el stream de la entrada para leer el contenido descomprimido
@@ -193,7 +194,7 @@ namespace practicaCys
                     }
                 }
 
-                Console.WriteLine("Archivo descomprimido con √©xito.");
+                Console.WriteLine("Archivo descomprimido con Èxito.");
             }
             catch (Exception ex)
             {
@@ -203,11 +204,5 @@ namespace practicaCys
 
             return decompressedBytes;
         }
-
-
-
     }
-
-
-
 }
