@@ -15,6 +15,15 @@ namespace practicaCys
         public Form1()
         {
             InitializeComponent();
+            panelListado.Visible = false;
+            panelAcceso.Visible = true;
+        }
+
+        private void buttonAcceder_Click(object sender, EventArgs e)
+        { 
+            panelListado.Visible = true;
+            panelAcceso.Visible = false;   
+              
         }
     }
 }
