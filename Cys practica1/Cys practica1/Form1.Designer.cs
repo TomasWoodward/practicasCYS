@@ -33,10 +33,10 @@
             Button_entrar = new Button();
             panel_Name = new Panel();
             panel_cifrar = new Panel();
+            panel_Listado = new Panel();
             LBox_Archivos = new ListBox();
             Btn_examinar = new Button();
             Btn_cifrar = new Button();
-            panel_Listado = new Panel();
             panel_Name.SuspendLayout();
             panel_cifrar.SuspendLayout();
             SuspendLayout();
@@ -80,7 +80,6 @@
             // 
             // panel_cifrar
             // 
-            panel_cifrar.Controls.Add(panel_Listado);
             panel_cifrar.Controls.Add(LBox_Archivos);
             panel_cifrar.Controls.Add(Btn_examinar);
             panel_cifrar.Controls.Add(Btn_cifrar);
@@ -88,6 +87,13 @@
             panel_cifrar.Name = "panel_cifrar";
             panel_cifrar.Size = new Size(640, 372);
             panel_cifrar.TabIndex = 6;
+            // 
+            // panel_Listado
+            // 
+            panel_Listado.Location = new Point(12, 12);
+            panel_Listado.Name = "panel_Listado";
+            panel_Listado.Size = new Size(640, 372);
+            panel_Listado.TabIndex = 3;
             // 
             // LBox_Archivos
             // 
@@ -116,18 +122,12 @@
             Btn_cifrar.Text = "Cifrar";
             Btn_cifrar.UseVisualStyleBackColor = true;
             // 
-            // panel_Listado
-            // 
-            panel_Listado.Location = new Point(0, 0);
-            panel_Listado.Name = "panel_Listado";
-            panel_Listado.Size = new Size(640, 372);
-            panel_Listado.TabIndex = 3;
-            // 
             // Inicio
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(664, 396);
+            Controls.Add(panel_Listado);
             Controls.Add(panel_cifrar);
             Controls.Add(panel_Name);
             Name = "Inicio";
