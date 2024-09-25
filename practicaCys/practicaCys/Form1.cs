@@ -23,8 +23,8 @@ namespace practicaCys
         private void buttonAcceder_Click(object sender, EventArgs e)
         { 
             panelListado.Visible = true;
-            panelAcceso.Visible = false;   
-              
+            panelAcceso.Visible = false;
+            panelCifrado.Visible = false;
         }
 
         private void buttonCifrar_Click(object sender, EventArgs e)
