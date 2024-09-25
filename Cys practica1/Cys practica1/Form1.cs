@@ -26,7 +26,12 @@ namespace Cys_practica1
         private void Button_entrar_Click(object sender, EventArgs e)
         {
             panel_Name.Visible = false;
-            panel_cifrar.Visible = true;
+            panel_cifrar.Visible = false;
+        }
+
+        private void Lbl_pass_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

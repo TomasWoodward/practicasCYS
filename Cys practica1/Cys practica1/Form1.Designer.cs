@@ -28,8 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Lbl_name = new Label();
-            TB_Name = new TextBox();
             Lbl_pass = new Label();
             textBox1 = new TextBox();
             Button_entrar = new Button();
@@ -38,45 +36,31 @@
             LBox_Archivos = new ListBox();
             Btn_examinar = new Button();
             Btn_cifrar = new Button();
+            panel_Listado = new Panel();
             panel_Name.SuspendLayout();
             panel_cifrar.SuspendLayout();
             SuspendLayout();
             // 
-            // Lbl_name
-            // 
-            Lbl_name.AutoSize = true;
-            Lbl_name.Location = new Point(58, 22);
-            Lbl_name.Name = "Lbl_name";
-            Lbl_name.Size = new Size(137, 20);
-            Lbl_name.TabIndex = 0;
-            Lbl_name.Text = "Nombre de usuario";
-            // 
-            // TB_Name
-            // 
-            TB_Name.Location = new Point(58, 45);
-            TB_Name.Name = "TB_Name";
-            TB_Name.Size = new Size(125, 27);
-            TB_Name.TabIndex = 1;
-            // 
             // Lbl_pass
             // 
             Lbl_pass.AutoSize = true;
-            Lbl_pass.Location = new Point(58, 88);
+            Lbl_pass.Location = new Point(48, 63);
             Lbl_pass.Name = "Lbl_pass";
-            Lbl_pass.Size = new Size(79, 20);
+            Lbl_pass.Size = new Size(147, 20);
             Lbl_pass.TabIndex = 2;
-            Lbl_pass.Text = "Contrasela";
+            Lbl_pass.Text = "Contraseña de Datos";
+            Lbl_pass.Click += Lbl_pass_Click;
             // 
             // textBox1
             // 
-            textBox1.Location = new Point(58, 111);
+            textBox1.Location = new Point(21, 98);
             textBox1.Name = "textBox1";
-            textBox1.Size = new Size(125, 27);
+            textBox1.Size = new Size(207, 27);
             textBox1.TabIndex = 3;
             // 
             // Button_entrar
             // 
-            Button_entrar.Location = new Point(75, 171);
+            Button_entrar.Location = new Point(78, 143);
             Button_entrar.Name = "Button_entrar";
             Button_entrar.Size = new Size(94, 29);
             Button_entrar.TabIndex = 4;
@@ -86,9 +70,7 @@
             // 
             // panel_Name
             // 
-            panel_Name.Controls.Add(Lbl_name);
             panel_Name.Controls.Add(Button_entrar);
-            panel_Name.Controls.Add(TB_Name);
             panel_Name.Controls.Add(textBox1);
             panel_Name.Controls.Add(Lbl_pass);
             panel_Name.Location = new Point(205, 68);
@@ -98,6 +80,7 @@
             // 
             // panel_cifrar
             // 
+            panel_cifrar.Controls.Add(panel_Listado);
             panel_cifrar.Controls.Add(LBox_Archivos);
             panel_cifrar.Controls.Add(Btn_examinar);
             panel_cifrar.Controls.Add(Btn_cifrar);
@@ -105,7 +88,6 @@
             panel_cifrar.Name = "panel_cifrar";
             panel_cifrar.Size = new Size(640, 372);
             panel_cifrar.TabIndex = 6;
-            panel_cifrar.Visible = false;
             // 
             // LBox_Archivos
             // 
@@ -134,6 +116,13 @@
             Btn_cifrar.Text = "Cifrar";
             Btn_cifrar.UseVisualStyleBackColor = true;
             // 
+            // panel_Listado
+            // 
+            panel_Listado.Location = new Point(0, 0);
+            panel_Listado.Name = "panel_Listado";
+            panel_Listado.Size = new Size(640, 372);
+            panel_Listado.TabIndex = 3;
+            // 
             // Inicio
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -150,9 +139,6 @@
         }
 
         #endregion
-
-        private Label Lbl_name;
-        private TextBox TB_Name;
         private Label Lbl_pass;
         private TextBox textBox1;
         private Button Button_entrar;
@@ -161,5 +147,6 @@
         private Button Btn_cifrar;
         private ListBox LBox_Archivos;
         private Button Btn_examinar;
+        private Panel panel_Listado;
     }
 }
