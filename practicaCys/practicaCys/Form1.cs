@@ -33,5 +33,10 @@ namespace practicaCys
             panelAcceso.Visible = false;
             panelCifrado.Visible = true;
         }
+
+        private void buttonExaminar_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

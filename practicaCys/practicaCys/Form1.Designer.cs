@@ -59,7 +59,7 @@
             this.panelAcceso.Controls.Add(this.labelPassword);
             this.panelAcceso.Controls.Add(this.textBoxPassword);
             this.panelAcceso.Controls.Add(this.buttonAcceder);
-            this.panelAcceso.Controls.Add(this.panelCifrado);
+            
             this.panelAcceso.Location = new System.Drawing.Point(12, 23);
             this.panelAcceso.Name = "panelAcceso";
             this.panelAcceso.Size = new System.Drawing.Size(776, 415);
@@ -108,6 +108,7 @@
             this.buttonExaminar.TabIndex = 1;
             this.buttonExaminar.Text = "Examinar";
             this.buttonExaminar.UseVisualStyleBackColor = true;
+            this.buttonExaminar.Click += new System.EventHandler(this.buttonExaminar_Click);
             // 
             // listaExaminados
             // 
