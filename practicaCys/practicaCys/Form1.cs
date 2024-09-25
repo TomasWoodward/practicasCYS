@@ -17,6 +17,7 @@ namespace practicaCys
             InitializeComponent();
             panelListado.Visible = false;
             panelAcceso.Visible = true;
+            panelCifrado.Visible = false;
         }
 
         private void buttonAcceder_Click(object sender, EventArgs e)
@@ -24,6 +25,13 @@ namespace practicaCys
             panelListado.Visible = true;
             panelAcceso.Visible = false;   
               
+        }
+
+        private void buttonCifrar_Click(object sender, EventArgs e)
+        {
+            panelListado.Visible = false;
+            panelAcceso.Visible = false;
+            panelCifrado.Visible = true;
         }
     }
 }
