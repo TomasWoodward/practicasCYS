@@ -21,7 +21,7 @@ namespace practicaCys2
         {
             byte[] key = new byte[32];
             RandomNumberGenerator.Fill(key); // Genera 32 bytes aleatorios para la clave  
-
+            key.GetHashCode();
             // Generar IV de 16 bytes  
             byte[] iv = new byte[16];
             RandomNumberGenerator.Fill(iv); // Genera 16 bytes aleatorios para el IV  
