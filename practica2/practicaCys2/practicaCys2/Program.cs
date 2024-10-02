@@ -45,7 +45,7 @@ namespace practicaCys2
         {
             byte[] cipheredBytes;
 
-            string rutaArchivo = @"C:\Users\Tomas Woodward\Desktop\Facultad\prueba.txt";
+            string rutaArchivo = @"..\claves\prueba.txt";
 
             // Leer el archivo y obtener los bytes  
             fileBytes = File.ReadAllBytes(rutaArchivo);
@@ -79,7 +79,7 @@ namespace practicaCys2
                     }
                 }
             }
-            File.WriteAllBytes(@"C:\Users\Tomas Woodward\Desktop\Facultad\prueba2.txt", cipheredBytes);
+            File.WriteAllBytes(@"..\claves\prueba2.txt", cipheredBytes);
 
             Console.WriteLine($"El archivo ha sido cifrado y guardado");
             //PRUEBA DESCIFRADO
@@ -158,7 +158,7 @@ namespace practicaCys2
             compressAndEncrypt compresor = new compressAndEncrypt();
             decryptedBytes = compresor.Descomprime(decryptedBytes);
 
-            File.WriteAllBytes(@"C:\Users\Tomas Woodward\Desktop\Facultad\prueba_descifrado.txt", decryptedBytes);
+            File.WriteAllBytes(@"..\claves\prueba_descifrado.txt", decryptedBytes);
 
             Console.WriteLine($"El archivo ha sido desencriptado y guardado");
             return decryptedBytes;
