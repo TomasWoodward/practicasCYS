@@ -19,18 +19,6 @@ namespace practicaCys2
         [STAThread]
         static void Main()
         {
-            byte[] key = new byte[32];
-            RandomNumberGenerator.Fill(key); // Genera 32 bytes aleatorios para la clave  
-            key.GetHashCode();
-            // Generar IV de 16 bytes  
-            byte[] iv = new byte[16];
-            RandomNumberGenerator.Fill(iv); // Genera 16 bytes aleatorios para el IV  
-
-            compressAndEncrypt compresor = new compressAndEncrypt();
-
-            // Llamar al método EncryptAes con los datos generados  
-            compresor.EncryptAes(new byte[0], key, iv);
-
             // To customize application configuration such as set high DPI settings or default font,  
             // see https://aka.ms/applicationconfiguration.  
             Application.EnableVisualStyles();
@@ -41,56 +29,20 @@ namespace practicaCys2
 
     public class compressAndEncrypt
     {
-        public byte[] EncryptAes(byte[] fileBytes, byte[] key, byte[] iv)
+        // Método para comprimir varios archivos y luego encriptar el ZIP resultante
+        public byte[] CompressAndEncryptFiles(Dictionary<string, byte[]> files, byte[] key, byte[] iv)
         {
-            byte[] cipheredBytes;
+            byte[] compressedBytes;
 
-            string rutaArchivo = @"../../../../claves/prueba.txt";
+            // Comprimir los archivos
+            compressedBytes = CompressFiles(files);
 
-            // Leer el archivo y obtener los bytes  
-            fileBytes = File.ReadAllBytes(rutaArchivo);
-
-            //Comprimir el archivo
-            compressAndEncrypt compresor = new compressAndEncrypt();
-            fileBytes = compresor.Comprime(fileBytes);
-
-            // Ahora 'fileBytes' contiene el contenido del archivo en formato byte[]  
-
-            using (Aes aes = Aes.Create())
-            {
-                aes.Key = key;
-                aes.IV = iv;
-
-                // Crear el cifrador  
-                ICryptoTransform encryptor = aes.CreateEncryptor(key, iv);
-
-                // Usar MemoryStream para almacenar el archivo cifrado  
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    // Crear CryptoStream para escribir los datos cifrados  
-                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
-                    {
-                        // Escribir los bytes del archivo al flujo de cifrado  
-                        cryptoStream.Write(fileBytes, 0, fileBytes.Length);
-                        cryptoStream.FlushFinalBlock();
-
-                        // Obtener los bytes cifrados  
-                        cipheredBytes = memoryStream.ToArray();
-                    }
-                }
-            }
-            File.WriteAllBytes(@"../../../../claves/prueba2.txt", cipheredBytes);
-
-            Console.WriteLine($"El archivo ha sido cifrado y guardado");
-            //PRUEBA DESCIFRADO
-
-            compresor.DecryptAes(cipheredBytes, key, iv);
-
-
-            return cipheredBytes;
+            // Encriptar el archivo comprimido
+            return EncryptAes(compressedBytes, key, iv);
         }
 
-        public byte[] Comprime(byte[] fileBytes)
+        // Método para comprimir múltiples archivos
+        public byte[] CompressFiles(Dictionary<string, byte[]> files)
         {
             byte[] compressedBytes;
 
@@ -98,36 +50,72 @@ namespace practicaCys2
             {
                 using (MemoryStream memoryStream = new MemoryStream())
                 {
-                    // Crear el archivo .zip en memoria  
+                    // Crear el archivo .zip en memoria
                     using (ZipArchive zip = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
                     {
-                        // Crear una entrada dentro del archivo .zip  
-                        ZipArchiveEntry zipEntry = zip.CreateEntry("archivo_comprimido");
-
-                        // Abrir el stream para escribir en la entrada del .zip  
-                        using (Stream entryStream = zipEntry.Open())
+                        foreach (var file in files)
                         {
-                            // Escribir los bytes del archivo dentro del .zip  
-                            entryStream.Write(fileBytes, 0, fileBytes.Length);
+                            // Crear una entrada dentro del archivo .zip por cada archivo
+                            ZipArchiveEntry zipEntry = zip.CreateEntry(file.Key);
 
+                            // Abrir el stream para escribir en la entrada del .zip
+                            using (Stream entryStream = zipEntry.Open())
+                            {
+                                // Escribir los bytes del archivo dentro del .zip
+                                entryStream.Write(file.Value, 0, file.Value.Length);
+                            }
                         }
                     }
-                    // Obtener los bytes comprimidos  
-                    compressedBytes = memoryStream.ToArray();
 
+                    // Obtener los bytes comprimidos
+                    compressedBytes = memoryStream.ToArray();
                 }
 
-                Console.WriteLine("Archivo comprimido con éxito.");
+                Console.WriteLine("Archivos comprimidos con éxito.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error al comprimir el archivo: " + ex.Message);
+                Console.WriteLine("Error al comprimir los archivos: " + ex.Message);
                 return null;
             }
 
             return compressedBytes;
         }
 
+        // Método para encriptar usando AES
+        public byte[] EncryptAes(byte[] dataBytes, byte[] key, byte[] iv)
+        {
+            byte[] cipheredBytes;
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = key;
+                aes.IV = iv;
+
+                // Crear el cifrador
+                ICryptoTransform encryptor = aes.CreateEncryptor(key, iv);
+
+                // Usar MemoryStream para almacenar el archivo cifrado
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    // Crear CryptoStream para escribir los datos cifrados
+                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+                    {
+                        // Escribir los bytes al flujo de cifrado
+                        cryptoStream.Write(dataBytes, 0, dataBytes.Length);
+                        cryptoStream.FlushFinalBlock();
+
+                        // Obtener los bytes cifrados
+                        cipheredBytes = memoryStream.ToArray();
+                    }
+                }
+            }
+
+            Console.WriteLine($"El archivo ha sido cifrado.");
+            return cipheredBytes;
+        }
+
+        // Método para desencriptar usando AES
         public byte[] DecryptAes(byte[] cipheredBytes, byte[] key, byte[] iv)
         {
             byte[] decryptedBytes;
@@ -155,55 +143,46 @@ namespace practicaCys2
                     }
                 }
             }
-            compressAndEncrypt compresor = new compressAndEncrypt();
-            decryptedBytes = compresor.Descomprime(decryptedBytes);
 
-            File.WriteAllBytes(@"../../../../claves/prueba_descifrado.txt", decryptedBytes);
-
-            Console.WriteLine($"El archivo ha sido desencriptado y guardado");
+            Console.WriteLine("El archivo ha sido descifrado.");
             return decryptedBytes;
         }
 
-        public byte[] Descomprime(byte[] compressedBytes)
+        // Método para descomprimir archivos
+        public Dictionary<string, byte[]> DecompressFiles(byte[] compressedBytes)
         {
-            byte[] decompressedBytes;
-
+            Dictionary<string, byte[]> files = new Dictionary<string, byte[]>();
 
             try
             {
-                // Usar MemoryStream para leer el archivo .zip desde los bytes comprimidos
                 using (MemoryStream memoryStream = new MemoryStream(compressedBytes))
                 {
-                    // Abrir el archivo .zip en memoria
                     using (ZipArchive zip = new ZipArchive(memoryStream, ZipArchiveMode.Read))
                     {
-                        // Obtener la primera entrada del .zip (puedes adaptar esto si hay más de una entrada)
-                        ZipArchiveEntry zipEntry = zip.Entries[0];
-
-                        // Abrir el stream de la entrada para leer el contenido descomprimido
-                        using (Stream entryStream = zipEntry.Open())
+                        foreach (ZipArchiveEntry entry in zip.Entries)
                         {
-                            using (MemoryStream decompressedStream = new MemoryStream())
+                            using (Stream entryStream = entry.Open())
                             {
-                                // Copiar el contenido del archivo descomprimido al MemoryStream
-                                entryStream.CopyTo(decompressedStream);
-
-                                // Convertir el contenido del stream descomprimido a un array de bytes
-                                decompressedBytes = decompressedStream.ToArray();
+                                using (MemoryStream decompressedStream = new MemoryStream())
+                                {
+                                    entryStream.CopyTo(decompressedStream);
+                                    files[entry.Name] = decompressedStream.ToArray();
+                                }
                             }
                         }
                     }
                 }
 
-                Console.WriteLine("Archivo descomprimido con éxito.");
+                Console.WriteLine("Archivos descomprimidos con éxito.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error al descomprimir el archivo: " + ex.Message);
+                Console.WriteLine("Error al descomprimir los archivos: " + ex.Message);
                 return null;
             }
 
-            return decompressedBytes;
+            return files;
         }
     }
+
 }
