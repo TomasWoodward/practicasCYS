@@ -44,10 +44,10 @@
             // 
             // buttonAcceder
             // 
-            buttonAcceder.Location = new Point(324, 345);
+            buttonAcceder.Location = new Point(310, 265);
             buttonAcceder.Margin = new Padding(3, 4, 3, 4);
             buttonAcceder.Name = "buttonAcceder";
-            buttonAcceder.Size = new Size(132, 40);
+            buttonAcceder.Size = new Size(145, 42);
             buttonAcceder.TabIndex = 0;
             buttonAcceder.Text = "Acceder";
             buttonAcceder.UseVisualStyleBackColor = true;
@@ -55,9 +55,11 @@
             // 
             // panelAcceso
             // 
+            panelAcceso.BackColor = SystemColors.GradientInactiveCaption;
             panelAcceso.Controls.Add(labelPassword);
             panelAcceso.Controls.Add(textBoxPassword);
             panelAcceso.Controls.Add(buttonAcceder);
+            panelAcceso.Font = new Font("Cascadia Code", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             panelAcceso.Location = new Point(12, 29);
             panelAcceso.Margin = new Padding(3, 4, 3, 4);
             panelAcceso.Name = "panelAcceso";
@@ -67,19 +69,21 @@
             // labelPassword
             // 
             labelPassword.AutoSize = true;
-            labelPassword.Location = new Point(321, 251);
+            labelPassword.Location = new Point(280, 145);
             labelPassword.Name = "labelPassword";
-            labelPassword.Size = new Size(148, 20);
+            labelPassword.Size = new Size(240, 27);
             labelPassword.TabIndex = 2;
-            labelPassword.Text = "Contraseña de datos:";
+            labelPassword.Text = "Contraseña de datos";
             // 
             // textBoxPassword
             // 
-            textBoxPassword.Location = new Point(219, 294);
+            textBoxPassword.Location = new Point(258, 203);
             textBoxPassword.Margin = new Padding(3, 4, 3, 4);
             textBoxPassword.Name = "textBoxPassword";
-            textBoxPassword.Size = new Size(331, 27);
+            textBoxPassword.Size = new Size(240, 31);
             textBoxPassword.TabIndex = 1;
+            textBoxPassword.TextAlign = HorizontalAlignment.Center;
+            textBoxPassword.TextChanged += textBoxPassword_TextChanged;
             // 
             // panelCifrado
             // 
