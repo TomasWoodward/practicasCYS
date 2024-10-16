@@ -208,6 +208,19 @@ namespace practicaCys2
             }
         }
 
-
+        private void button_back_Click(object sender, EventArgs e)
+        {
+            listarArchivos();
+            panelListado.Visible = true;
+            panelAcceso.Visible = false;
+            panelCifrado.Visible = false;
+        }
+        private void listarArchivos()
+        {
+            listaArchivos.Items.Clear();
+            string folderPath = @"../../../../archivos/";
+            string[] fnuevos = Directory.GetFiles(folderPath);
+            listaArchivos.Items.AddRange(fnuevos);
+        }
     }
 }
