@@ -222,5 +222,10 @@ namespace practicaCys2
             string[] fnuevos = Directory.GetFiles(folderPath);
             listaArchivos.Items.AddRange(fnuevos);
         }
+
+        private void input_nombre_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -28,8 +28,9 @@
         {
             buttonAcceder = new Button();
             panelAcceso = new Panel();
-            labelPassword = new Label();
             textBoxPassword = new TextBox();
+            labelPassword = new Label();
+            panel1 = new Panel();
             panelCifrado = new Panel();
             button_back = new Button();
             input_nombre = new TextBox();
@@ -47,9 +48,13 @@
             // buttonAcceder
             // 
             buttonAcceder.Anchor = AnchorStyles.None;
-            buttonAcceder.BackColor = SystemColors.ButtonHighlight;
+            buttonAcceder.BackColor = SystemColors.ControlLight;
             buttonAcceder.Cursor = Cursors.Hand;
-            buttonAcceder.Location = new Point(405, 335);
+            buttonAcceder.FlatAppearance.BorderColor = Color.Gray;
+            buttonAcceder.FlatAppearance.MouseDownBackColor = SystemColors.ButtonHighlight;
+            buttonAcceder.FlatAppearance.MouseOverBackColor = Color.Gray;
+            buttonAcceder.FlatStyle = FlatStyle.Flat;
+            buttonAcceder.Location = new Point(405, 315);
             buttonAcceder.Margin = new Padding(0);
             buttonAcceder.Name = "buttonAcceder";
             buttonAcceder.Size = new Size(140, 40);
@@ -61,10 +66,11 @@
             // panelAcceso
             // 
             panelAcceso.AutoSize = true;
-            panelAcceso.BackColor = SystemColors.GradientInactiveCaption;
-            panelAcceso.Controls.Add(labelPassword);
+            panelAcceso.BackColor = Color.FromArgb(17, 16, 56);
             panelAcceso.Controls.Add(textBoxPassword);
+            panelAcceso.Controls.Add(labelPassword);
             panelAcceso.Controls.Add(buttonAcceder);
+            panelAcceso.Controls.Add(panel1);
             panelAcceso.Dock = DockStyle.Fill;
             panelAcceso.Font = new Font("Tahoma", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             panelAcceso.Location = new Point(0, 0);
@@ -73,11 +79,25 @@
             panelAcceso.Size = new Size(932, 553);
             panelAcceso.TabIndex = 1;
             // 
+            // textBoxPassword
+            // 
+            textBoxPassword.Anchor = AnchorStyles.None;
+            textBoxPassword.BackColor = SystemColors.ControlLight;
+            textBoxPassword.Location = new Point(325, 261);
+            textBoxPassword.Margin = new Padding(0);
+            textBoxPassword.Name = "textBoxPassword";
+            textBoxPassword.Size = new Size(300, 28);
+            textBoxPassword.TabIndex = 1;
+            textBoxPassword.TextAlign = HorizontalAlignment.Center;
+            textBoxPassword.TextChanged += textBoxPassword_TextChanged;
+            // 
             // labelPassword
             // 
             labelPassword.Anchor = AnchorStyles.None;
+            labelPassword.BackColor = Color.FromArgb(47, 45, 136);
             labelPassword.Font = new Font("Tahoma", 13F);
-            labelPassword.Location = new Point(325, 240);
+            labelPassword.ForeColor = Color.White;
+            labelPassword.Location = new Point(325, 210);
             labelPassword.Margin = new Padding(0);
             labelPassword.Name = "labelPassword";
             labelPassword.Size = new Size(300, 30);
@@ -85,16 +105,15 @@
             labelPassword.Text = "CONTRASEÑA DE DATOS";
             labelPassword.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // textBoxPassword
+            // panel1
             // 
-            textBoxPassword.Anchor = AnchorStyles.None;
-            textBoxPassword.Location = new Point(325, 286);
-            textBoxPassword.Margin = new Padding(0);
-            textBoxPassword.Name = "textBoxPassword";
-            textBoxPassword.Size = new Size(300, 28);
-            textBoxPassword.TabIndex = 1;
-            textBoxPassword.TextAlign = HorizontalAlignment.Center;
-            textBoxPassword.TextChanged += textBoxPassword_TextChanged;
+            panel1.Anchor = AnchorStyles.None;
+            panel1.BackColor = Color.FromArgb(47, 45, 136);
+            panel1.ForeColor = SystemColors.ActiveCaptionText;
+            panel1.Location = new Point(185, 96);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(580, 360);
+            panel1.TabIndex = 3;
             // 
             // panelCifrado
             // 
@@ -103,15 +122,20 @@
             panelCifrado.Controls.Add(buttonConfirmar);
             panelCifrado.Controls.Add(buttonExaminar);
             panelCifrado.Controls.Add(listaExaminados);
+            panelCifrado.Dock = DockStyle.Fill;
             panelCifrado.Font = new Font("Tahoma", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            panelCifrado.Location = new Point(0, 4);
+            panelCifrado.Location = new Point(0, 0);
             panelCifrado.Margin = new Padding(3, 4, 3, 4);
             panelCifrado.Name = "panelCifrado";
-            panelCifrado.Size = new Size(776, 515);
+            panelCifrado.Size = new Size(932, 553);
             panelCifrado.TabIndex = 3;
             // 
             // button_back
             // 
+            button_back.Cursor = Cursors.Hand;
+            button_back.FlatAppearance.BorderColor = Color.White;
+            button_back.FlatAppearance.BorderSize = 2;
+            button_back.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 255, 128);
             button_back.Location = new Point(28, 26);
             button_back.Name = "button_back";
             button_back.Size = new Size(42, 38);
@@ -122,15 +146,18 @@
             // 
             // input_nombre
             // 
-            input_nombre.Location = new Point(349, 111);
+            input_nombre.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            input_nombre.Location = new Point(500, 126);
             input_nombre.Name = "input_nombre";
             input_nombre.PlaceholderText = "Introduce un nombre para el archivo";
             input_nombre.Size = new Size(376, 26);
             input_nombre.TabIndex = 3;
+            input_nombre.TextChanged += input_nombre_TextChanged;
             // 
             // buttonConfirmar
             // 
-            buttonConfirmar.Location = new Point(622, 466);
+            buttonConfirmar.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            buttonConfirmar.Location = new Point(773, 460);
             buttonConfirmar.Margin = new Padding(3, 4, 3, 4);
             buttonConfirmar.Name = "buttonConfirmar";
             buttonConfirmar.Size = new Size(103, 45);
@@ -141,7 +168,7 @@
             // 
             // buttonExaminar
             // 
-            buttonExaminar.Location = new Point(52, 98);
+            buttonExaminar.Location = new Point(52, 112);
             buttonExaminar.Margin = new Padding(3, 4, 3, 4);
             buttonExaminar.Name = "buttonExaminar";
             buttonExaminar.Size = new Size(99, 40);
@@ -152,32 +179,35 @@
             // 
             // listaExaminados
             // 
+            listaExaminados.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             listaExaminados.FormattingEnabled = true;
             listaExaminados.ItemHeight = 18;
-            listaExaminados.Location = new Point(52, 156);
+            listaExaminados.Location = new Point(52, 192);
             listaExaminados.Margin = new Padding(3, 4, 3, 4);
             listaExaminados.Name = "listaExaminados";
-            listaExaminados.Size = new Size(673, 274);
+            listaExaminados.Size = new Size(824, 238);
             listaExaminados.TabIndex = 0;
             // 
             // panelListado
             // 
             panelListado.Controls.Add(buttonCifrar);
             panelListado.Controls.Add(listaArchivos);
+            panelListado.Dock = DockStyle.Fill;
             panelListado.Font = new Font("Tahoma", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            panelListado.Location = new Point(12, 29);
+            panelListado.Location = new Point(0, 0);
             panelListado.Margin = new Padding(3, 4, 3, 4);
             panelListado.Name = "panelListado";
-            panelListado.Size = new Size(776, 519);
+            panelListado.Size = new Size(932, 553);
             panelListado.TabIndex = 2;
             // 
             // buttonCifrar
             // 
+            buttonCifrar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             buttonCifrar.Font = new Font("Tahoma", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            buttonCifrar.Location = new Point(610, 58);
+            buttonCifrar.Location = new Point(798, 66);
             buttonCifrar.Margin = new Padding(3, 4, 3, 4);
             buttonCifrar.Name = "buttonCifrar";
-            buttonCifrar.Size = new Size(103, 37);
+            buttonCifrar.Size = new Size(100, 40);
             buttonCifrar.TabIndex = 1;
             buttonCifrar.Text = "Cifrar";
             buttonCifrar.UseVisualStyleBackColor = true;
@@ -185,12 +215,13 @@
             // 
             // listaArchivos
             // 
+            listaArchivos.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             listaArchivos.FormattingEnabled = true;
             listaArchivos.ItemHeight = 18;
-            listaArchivos.Location = new Point(56, 112);
-            listaArchivos.Margin = new Padding(3, 4, 3, 4);
+            listaArchivos.Location = new Point(36, 155);
+            listaArchivos.Margin = new Padding(0);
             listaArchivos.Name = "listaArchivos";
-            listaArchivos.Size = new Size(657, 346);
+            listaArchivos.Size = new Size(862, 364);
             listaArchivos.TabIndex = 0;
             // 
             // Form1
@@ -228,5 +259,6 @@
         private System.Windows.Forms.ListBox listaExaminados;
         private Button button_back;
         private TextBox input_nombre;
+        private Panel panel1;
     }
 }
