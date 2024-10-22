@@ -94,7 +94,7 @@
             // labelPassword
             // 
             labelPassword.Anchor = AnchorStyles.None;
-            labelPassword.BackColor = Color.FromArgb(47, 45, 136);
+            labelPassword.BackColor = Color.FromArgb(42, 37, 97);
             labelPassword.Font = new Font("Tahoma", 13F);
             labelPassword.ForeColor = Color.White;
             labelPassword.Location = new Point(325, 210);
@@ -108,7 +108,7 @@
             // panel1
             // 
             panel1.Anchor = AnchorStyles.None;
-            panel1.BackColor = Color.FromArgb(47, 45, 136);
+            panel1.BackColor = Color.FromArgb(42, 37, 97);
             panel1.ForeColor = SystemColors.ActiveCaptionText;
             panel1.Location = new Point(185, 96);
             panel1.Name = "panel1";
