@@ -46,44 +46,52 @@
             // 
             // buttonAcceder
             // 
-            buttonAcceder.Location = new Point(337, 254);
-            buttonAcceder.Margin = new Padding(3, 4, 3, 4);
+            buttonAcceder.Anchor = AnchorStyles.None;
+            buttonAcceder.BackColor = SystemColors.ButtonHighlight;
+            buttonAcceder.Cursor = Cursors.Hand;
+            buttonAcceder.Location = new Point(405, 335);
+            buttonAcceder.Margin = new Padding(0);
             buttonAcceder.Name = "buttonAcceder";
-            buttonAcceder.Size = new Size(123, 35);
+            buttonAcceder.Size = new Size(140, 40);
             buttonAcceder.TabIndex = 0;
             buttonAcceder.Text = "Acceder";
-            buttonAcceder.UseVisualStyleBackColor = true;
+            buttonAcceder.UseVisualStyleBackColor = false;
             buttonAcceder.Click += buttonAcceder_Click;
             // 
             // panelAcceso
             // 
+            panelAcceso.AutoSize = true;
             panelAcceso.BackColor = SystemColors.GradientInactiveCaption;
             panelAcceso.Controls.Add(labelPassword);
             panelAcceso.Controls.Add(textBoxPassword);
             panelAcceso.Controls.Add(buttonAcceder);
+            panelAcceso.Dock = DockStyle.Fill;
             panelAcceso.Font = new Font("Tahoma", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            panelAcceso.Location = new Point(12, 29);
+            panelAcceso.Location = new Point(0, 0);
             panelAcceso.Margin = new Padding(3, 4, 3, 4);
             panelAcceso.Name = "panelAcceso";
-            panelAcceso.Size = new Size(776, 519);
+            panelAcceso.Size = new Size(932, 553);
             panelAcceso.TabIndex = 1;
             // 
             // labelPassword
             // 
-            labelPassword.AutoSize = true;
-            labelPassword.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelPassword.Location = new Point(295, 149);
+            labelPassword.Anchor = AnchorStyles.None;
+            labelPassword.Font = new Font("Tahoma", 13F);
+            labelPassword.Location = new Point(325, 240);
+            labelPassword.Margin = new Padding(0);
             labelPassword.Name = "labelPassword";
-            labelPassword.Size = new Size(194, 24);
+            labelPassword.Size = new Size(300, 30);
             labelPassword.TabIndex = 2;
-            labelPassword.Text = "Contraseña de datos";
+            labelPassword.Text = "CONTRASEÑA DE DATOS";
+            labelPassword.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // textBoxPassword
             // 
-            textBoxPassword.Location = new Point(267, 202);
-            textBoxPassword.Margin = new Padding(3, 4, 3, 4);
+            textBoxPassword.Anchor = AnchorStyles.None;
+            textBoxPassword.Location = new Point(325, 286);
+            textBoxPassword.Margin = new Padding(0);
             textBoxPassword.Name = "textBoxPassword";
-            textBoxPassword.Size = new Size(240, 28);
+            textBoxPassword.Size = new Size(300, 28);
             textBoxPassword.TabIndex = 1;
             textBoxPassword.TextAlign = HorizontalAlignment.Center;
             textBoxPassword.TextChanged += textBoxPassword_TextChanged;
@@ -189,11 +197,13 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 562);
+            AutoSize = true;
+            ClientSize = new Size(932, 553);
+            Controls.Add(panelAcceso);
             Controls.Add(panelListado);
             Controls.Add(panelCifrado);
-            Controls.Add(panelAcceso);
             Margin = new Padding(3, 4, 3, 4);
+            MinimumSize = new Size(950, 600);
             Name = "Form1";
             Text = "Form1";
             panelAcceso.ResumeLayout(false);
@@ -202,6 +212,7 @@
             panelCifrado.PerformLayout();
             panelListado.ResumeLayout(false);
             ResumeLayout(false);
+            PerformLayout();
         }
 
         private System.Windows.Forms.Button buttonAcceder;
