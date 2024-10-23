@@ -31,7 +31,7 @@ namespace practicaCys2
         }
 
 
-        // Evento para manejar la selección del archivo en el ListBox
+        // Evento para manejar la selecciÃ³n del archivo en el ListBox
         private void ListaArchivos_SelectedIndexChanged(object sender, EventArgs e)
         {
             compressAndEncrypt decryptAes = new compressAndEncrypt();
@@ -49,7 +49,7 @@ namespace practicaCys2
 
                 if (!File.Exists(keysFilePath))
                 {
-                    MessageBox.Show("No se encontró el archivo de claves correspondiente.");
+                    MessageBox.Show("No se encontrÃ³ el archivo de claves correspondiente.");
                     return;
                 }
 
@@ -106,7 +106,7 @@ namespace practicaCys2
 
         private void buttonExaminar_Click(object sender, EventArgs e)
         {
-            // Crear un diálogo para seleccionar archivos
+            // Crear un diÃ¡logo para seleccionar archivos
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Multiselect = true,  // Permitir seleccionar varios archivos
@@ -136,7 +136,7 @@ namespace practicaCys2
 
         }
 
-        // Evento cuando el usuario hace clic en el botón "Confirmar"
+        // Evento cuando el usuario hace clic en el botÃ³n "Confirmar"
         private void buttonConfirmar_Click(object sender, EventArgs e)
         {
             if (listaExaminados.Items.Count > 0)
@@ -162,35 +162,35 @@ namespace practicaCys2
                 byte[] iv = new byte[16]; // Iv
                 RandomNumberGenerator.Fill(iv); // Generar 16 bytes aleatorios para el IV
 
-                // Crear el diccionario que contendrá la clave (Kfile) y el IV
+                // Crear el diccionario que contendrÃ¡ la clave (Kfile) y el IV
                 Dictionary<string, byte[]> claves = new Dictionary<string, byte[]>()
         {
             { "Kfile", key },
             { "IV", iv }
         };
 
-                // Crear un nombre único basado en la fecha y hora actual
+                // Crear un nombre Ãºnico basado en la fecha y hora actual
                 string uniqueFileName = $"output_{DateTime.Now.Ticks}";
 
                 // Comprimir las claves
                 byte[] compressedKeys = compressAndEncrypt.CompressFiles(claves);
 
-                // Guardar el archivo comprimido (ZIP) en el sistema de archivos con el nombre único
+                // Guardar el archivo comprimido (ZIP) en el sistema de archivos con el nombre Ãºnico
                 string keysFilePath = Path.Combine(@"../../../../claves/", $"{uniqueFileName}_keys.zip");
                 File.WriteAllBytes(keysFilePath, compressedKeys);
 
                 // Comprimir y cifrar los archivos seleccionados
                 byte[] encryptedZip = compressAndEncrypt.CompressAndEncryptFiles(files, key, iv);
 
-                // Guardar el archivo ZIP cifrado en una ubicación deseada con el mismo nombre único
+                // Guardar el archivo ZIP cifrado en una ubicaciÃ³n deseada con el mismo nombre Ãºnico
                 string encryptedFilePath = Path.Combine(@"../../../../archivos/", $"{uniqueFileName}_encrypted.zip");
                 File.WriteAllBytes(encryptedFilePath, encryptedZip);
 
-                MessageBox.Show($"Archivos comprimidos y cifrados con éxito.\nGuardado en: {encryptedFilePath}\nClaves guardadas en: {keysFilePath}");
+                MessageBox.Show($"Archivos comprimidos y cifrados con Ã©xito.\nGuardado en: {encryptedFilePath}\nClaves guardadas en: {keysFilePath}");
 
 
 
-                // Limpiar el ListBox después de confirmar
+                // Limpiar el ListBox despuÃ©s de confirmar
                 listaArchivos.Items.Clear();
                 panelListado.Visible = true;
                 panelAcceso.Visible = false;
