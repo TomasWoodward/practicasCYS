@@ -379,9 +379,9 @@ namespace practicaCys2
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
             ClientSize = new Size(932, 553);
-            Controls.Add(panelCifrado);
             Controls.Add(panelAcceso);
             Controls.Add(panelListado);
+            Controls.Add(panelCifrado);
             Margin = new Padding(3, 4, 3, 4);
             MinimumSize = new Size(950, 600);
             Name = "Form1";
