@@ -41,7 +41,7 @@ namespace practicaCys2
             panel3 = new Panel();
             label5 = new Label();
             button_back = new Button();
-            input_nombre = new TextBox();
+            
             buttonConfirmar = new Button();
             buttonExaminar = new Button();
             listaExaminados = new ListBox();
@@ -201,7 +201,7 @@ namespace practicaCys2
             panelCifrado.BackColor = Color.FromArgb(5, 57, 91);
             panelCifrado.Controls.Add(panel3);
             panelCifrado.Controls.Add(button_back);
-            panelCifrado.Controls.Add(input_nombre);
+
             panelCifrado.Controls.Add(buttonConfirmar);
             panelCifrado.Controls.Add(buttonExaminar);
             panelCifrado.Controls.Add(listaExaminados);
@@ -248,17 +248,7 @@ namespace practicaCys2
             button_back.Text = "Z";
             button_back.UseVisualStyleBackColor = true;
             button_back.Click += button_back_Click;
-            // 
-            // input_nombre
-            // 
-            input_nombre.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            input_nombre.Font = new Font("Tahoma", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            input_nombre.Location = new Point(500, 149);
-            input_nombre.Name = "input_nombre";
-            input_nombre.PlaceholderText = "Introduce un nombre para el archivo";
-            input_nombre.Size = new Size(376, 28);
-            input_nombre.TabIndex = 3;
-            input_nombre.TextChanged += input_nombre_TextChanged;
+            
             // 
             // buttonConfirmar
             // 
@@ -446,7 +436,7 @@ namespace practicaCys2
         private System.Windows.Forms.Button buttonExaminar;
         private System.Windows.Forms.ListBox listaExaminados;
         private Button button_back;
-        private TextBox input_nombre;
+  
         private Panel panel1;
         private Label label1;
         private PictureBox pictureBox1;

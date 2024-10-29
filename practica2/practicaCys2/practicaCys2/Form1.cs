@@ -130,13 +130,30 @@ namespace practicaCys2
             else
             {
                 clavesRSA[0] = Encoding.UTF8.GetString(compressAndEncrypt.DecompressFiles(File.ReadAllBytes(@"../../../../claves/" + user + "/publicKey.zip"))["publicKey"]);
-
                 byte[] privateKeyBytes = File.ReadAllBytes(@"../../../../claves/" + user + "/privateKey.zip");
                 Dictionary<string, byte[]> privateKeyDict = compressAndEncrypt.DecompressFiles(privateKeyBytes);
+                try { 
                 clavesRSA[1] = compressAndEncrypt.DecryptPrivateKeyWithAes(privateKeyDict["privateKey"], passUsuario);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Contraseña incorrecta.");
+                    Application.Exit();
+                    return;
+                }
+
+            }
+            string folderPath = @"../../../../archivos/" + user + "/";
+            if (Directory.Exists(folderPath))
+            {
+                string[] fnuevos = Directory.GetFiles(folderPath);
+                listaArchivos.Items.AddRange(fnuevos);
+            }
+            else
+            {
+                MessageBox.Show("El usuario no tiene archivos para desencriptar.");
             }
 
-  
         }
 
         private void buttonCifrar_Click(object sender, EventArgs e)
@@ -216,7 +233,7 @@ namespace practicaCys2
 
                 // Crear un nombre único basado en la fecha y hora actual
                 Directory.CreateDirectory(@"../../../../claves/" + user);
-                string uniqueFileName = $"output_{DateTime.Now.Ticks}";
+                string uniqueFileName = $"output_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}";
                 string keysFilePath = Path.Combine(@"../../../../claves/"+user+"/", $"{uniqueFileName}("+user+")_keys.zip");
 
                 // Comprimir y cifrar los archivos seleccionados
