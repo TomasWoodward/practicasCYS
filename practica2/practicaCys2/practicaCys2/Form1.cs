@@ -104,8 +104,14 @@ namespace practicaCys2
             compressAndEncrypt.GenerateRsaKeys(out publicKey, out privateKey);
             
             clavesRSA = new string[2] { publicKey, privateKey };
-            clavesRSA[0] = Convert.ToBase64String(Convert.FromBase64String(clavesRSA[0]));
-            clavesRSA[1] = Convert.ToBase64String(Convert.FromBase64String(clavesRSA[1]));
+            byte[] clavePublica = Encoding.UTF8.GetBytes(publicKey);
+            clavePublica = compressAndEncrypt.CompressFiles(new Dictionary<string, byte[]> { { "publicKey", clavePublica } });
+            File.WriteAllBytes(@"../../../../claves/publicKey"+".zip", clavePublica);
+
+            byte[] clavePrivada = compressAndEncrypt.EncryptPrivateKeyWithAes(clavesRSA[1], "pass");
+            clavePrivada = compressAndEncrypt.CompressFiles(new Dictionary<string, byte[]> { { "privateKey", clavePrivada } });
+            File.WriteAllBytes(@"../../../../claves/privateKey" + ".zip", clavePrivada);
+            MessageBox.Show("Claves generadas con éxito.");
         }
 
         private void buttonCifrar_Click(object sender, EventArgs e)
@@ -177,10 +183,10 @@ namespace practicaCys2
 
                 // Crear el diccionario que contendrá la clave (Kfile) y el IV
                 Dictionary<string, byte[]> claves = new Dictionary<string, byte[]>()
-        {
-            { "Kfile", key },
-            { "IV", iv }
-        };
+                {
+                    { "Kfile", key },
+                    { "IV", iv }
+                };
 
                 // Crear un nombre único basado en la fecha y hora actual
                 string uniqueFileName = $"output_{DateTime.Now.Ticks}";

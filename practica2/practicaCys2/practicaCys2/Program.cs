@@ -229,7 +229,7 @@ namespace practicaCys2
 
             using (Aes aes = Aes.Create())
             {
-                // Derivar la clave AES de la contrase�a del usuario
+                // Derivar la clave AES de la contrasena del usuario
                 using (Rfc2898DeriveBytes keyGen = new(password, Encoding.UTF8.GetBytes("SaltValue"), 10000, HashAlgorithmName.SHA256))
                 {
                     aes.Key = keyGen.GetBytes(16);  // AES128 (clave de 16 bytes)
