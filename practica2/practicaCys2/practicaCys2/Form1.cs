@@ -12,6 +12,7 @@ namespace practicaCys2
 {
     public partial class Form1 : Form
     {
+        private string[] clavesRSA;
         public Form1()
         {
             InitializeComponent();
@@ -54,7 +55,8 @@ namespace practicaCys2
                 }
 
                 // Leer y descomprimir las claves del archivo ZIP
-                Dictionary<string, byte[]> keys = decryptAes.DecompressFiles(File.ReadAllBytes(keysFilePath));
+                byte[] compressedKeys = File.ReadAllBytes(keysFilePath);
+                Dictionary<string, byte[]> keys = decryptAes.DecompressFiles(compressedKeys);
 
                 if (keys == null || !keys.ContainsKey("Kfile") || !keys.ContainsKey("IV"))
                 {
@@ -66,6 +68,8 @@ namespace practicaCys2
                 byte[] key = keys["Kfile"];
                 byte[] iv = keys["IV"];
 
+                key = decryptAes.DecryptAesKeyWithRsa(key, clavesRSA[1]);
+                iv = decryptAes.DecryptAesKeyWithRsa(iv, clavesRSA[1]);
                 // Desencriptar el archivo
                 byte[] decryptedFile = decryptAes.DecryptAes(encryptedFile, key, iv);
 
@@ -93,6 +97,15 @@ namespace practicaCys2
             panelListado.Visible = true;
             panelAcceso.Visible = false;
             panelCifrado.Visible = false;
+            /*Generar clave publica y privada*/
+            compressAndEncrypt compressAndEncrypt = new compressAndEncrypt();
+
+            string publicKey, privateKey;
+            compressAndEncrypt.GenerateRsaKeys(out publicKey, out privateKey);
+            
+            clavesRSA = new string[2] { publicKey, privateKey };
+            clavesRSA[0] = Convert.ToBase64String(Convert.FromBase64String(clavesRSA[0]));
+            clavesRSA[1] = Convert.ToBase64String(Convert.FromBase64String(clavesRSA[1]));
         }
 
         private void buttonCifrar_Click(object sender, EventArgs e)
@@ -171,13 +184,7 @@ namespace practicaCys2
 
                 // Crear un nombre único basado en la fecha y hora actual
                 string uniqueFileName = $"output_{DateTime.Now.Ticks}";
-
-                // Comprimir las claves
-                byte[] compressedKeys = compressAndEncrypt.CompressFiles(claves);
-
-                // Guardar el archivo comprimido (ZIP) en el sistema de archivos con el nombre único
                 string keysFilePath = Path.Combine(@"../../../../claves/", $"{uniqueFileName}_keys.zip");
-                File.WriteAllBytes(keysFilePath, compressedKeys);
 
                 // Comprimir y cifrar los archivos seleccionados
                 byte[] encryptedZip = compressAndEncrypt.CompressAndEncryptFiles(files, key, iv);
@@ -188,6 +195,14 @@ namespace practicaCys2
 
                 MessageBox.Show($"Archivos comprimidos y cifrados con éxito.\nGuardado en: {encryptedFilePath}\nClaves guardadas en: {keysFilePath}");
 
+                // Comprimir y encriptar las claves
+                claves["Kfile"] = compressAndEncrypt.EncryptAesKeyWithRsa(claves["Kfile"], clavesRSA[0]);
+                claves["IV"] = compressAndEncrypt.EncryptAesKeyWithRsa(claves["IV"], clavesRSA[0]);
+                byte[] compressedKeys = compressAndEncrypt.CompressFiles(claves);
+
+                // Guardar el archivo comprimido (ZIP) en el sistema de archivos con el nombre único
+
+                File.WriteAllBytes(keysFilePath, compressedKeys);
 
 
                 // Limpiar el ListBox después de confirmar

@@ -30,7 +30,7 @@ namespace practicaCys2
 
     public class compressAndEncrypt
     {
-        // M�todo para comprimir varios archivos y luego encriptar el ZIP resultante
+        // Metodo para comprimir varios archivos y luego encriptar el ZIP resultante
         public byte[] CompressAndEncryptFiles(Dictionary<string, byte[]> files, byte[] key, byte[] iv)
         {
             byte[] compressedBytes;
@@ -42,7 +42,7 @@ namespace practicaCys2
             return EncryptAes(compressedBytes, key, iv);
         }
 
-        // M�todo para comprimir m�ltiples archivos
+        // Metodo para comprimir m�ltiples archivos
         public byte[] CompressFiles(Dictionary<string, byte[]> files)
         {
             byte[] compressedBytes;
@@ -83,7 +83,7 @@ namespace practicaCys2
             return compressedBytes;
         }
 
-        // M�todo para encriptar usando AES
+        // Metodo para encriptar usando AES
         public byte[] EncryptAes(byte[] dataBytes, byte[] key, byte[] iv)
         {
             byte[] cipheredBytes;
@@ -116,7 +116,7 @@ namespace practicaCys2
             return cipheredBytes;
         }
 
-        // M�todo para desencriptar usando AES
+        // Mwtodo para desencriptar usando AES
         public byte[] DecryptAes(byte[] cipheredBytes, byte[] key, byte[] iv)
         {
             byte[] decryptedBytes;
@@ -188,14 +188,26 @@ namespace practicaCys2
         {
             using (RSA rsa = RSA.Create(2048))
             {
-                // Exportar la clave p�blica y privada
+                // Exportar la clave publica y privada
                 publicKey = Convert.ToBase64String(rsa.ExportRSAPublicKey());
                 privateKey = Convert.ToBase64String(rsa.ExportRSAPrivateKey());
                 return rsa.ExportParameters(true);
             }
         }
+        public byte[] DecryptAesKeyWithRsa(byte[] encryptedAesKey, string privateKey)
+        {
+            byte[] decryptedKey;
 
-        // M�todo para cifrar la clave AES con la clave p�blica RSA
+            using (RSA rsa = RSA.Create())
+            {
+                rsa.ImportRSAPrivateKey(Convert.FromBase64String(privateKey), out _);
+                decryptedKey = rsa.Decrypt(encryptedAesKey, RSAEncryptionPadding.OaepSHA256);
+            }
+
+            return decryptedKey;
+        }
+
+        // Metodo para cifrar la clave AES con la clave p�blica RSA
         public byte[] EncryptAesKeyWithRsa(byte[] aesKey, string publicKey)
         {
             byte[] encryptedKey;
@@ -209,7 +221,7 @@ namespace practicaCys2
             return encryptedKey;
         }
 
-        // M�todo para cifrar la clave privada RSA con AES128
+        // Metodo para cifrar la clave privada RSA con AES128
         public byte[] EncryptPrivateKeyWithAes(string privateKey, string password)
         {
             byte[] encryptedPrivateKey;
