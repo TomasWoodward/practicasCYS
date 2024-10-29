@@ -214,6 +214,7 @@ namespace practicaCys2
 
             using (RSA rsa = RSA.Create())
             {
+             
                 rsa.ImportRSAPublicKey(Convert.FromBase64String(publicKey), out _);
                 encryptedKey = rsa.Encrypt(aesKey, RSAEncryptionPadding.OaepSHA256);
             }
@@ -266,7 +267,7 @@ namespace practicaCys2
                 {
                     aes.Key = keyGen.GetBytes(16);
                     aes.IV = keyGen.GetBytes(16);
-
+                    
                     using (ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
                     {
                         using (MemoryStream memoryStream = new(encryptedPrivateKey))

@@ -50,6 +50,8 @@ namespace practicaCys2
             label4 = new Label();
             buttonCifrar = new Button();
             listaArchivos = new ListBox();
+            textBoxUser = new TextBox();
+            label6 = new Label();
             panelAcceso.SuspendLayout();
             panel1.SuspendLayout();
             panelClaro.SuspendLayout();
@@ -69,7 +71,7 @@ namespace practicaCys2
             buttonAcceder.FlatAppearance.MouseDownBackColor = SystemColors.ButtonHighlight;
             buttonAcceder.FlatAppearance.MouseOverBackColor = Color.Gray;
             buttonAcceder.FlatStyle = FlatStyle.Flat;
-            buttonAcceder.Location = new Point(396, 410);
+            buttonAcceder.Location = new Point(180, 341);
             buttonAcceder.Margin = new Padding(0);
             buttonAcceder.Name = "buttonAcceder";
             buttonAcceder.Size = new Size(140, 40);
@@ -82,9 +84,6 @@ namespace practicaCys2
             // 
             panelAcceso.AutoSize = true;
             panelAcceso.BackColor = Color.FromArgb(5, 57, 91);
-            panelAcceso.Controls.Add(textBoxPassword);
-            panelAcceso.Controls.Add(labelPassword);
-            panelAcceso.Controls.Add(buttonAcceder);
             panelAcceso.Controls.Add(panel1);
             panelAcceso.Controls.Add(panelClaro);
             panelAcceso.Dock = DockStyle.Fill;
@@ -99,7 +98,7 @@ namespace practicaCys2
             // 
             textBoxPassword.Anchor = AnchorStyles.None;
             textBoxPassword.BackColor = SystemColors.ControlLight;
-            textBoxPassword.Location = new Point(316, 350);
+            textBoxPassword.Location = new Point(95, 297);
             textBoxPassword.Margin = new Padding(0);
             textBoxPassword.Name = "textBoxPassword";
             textBoxPassword.Size = new Size(300, 28);
@@ -113,7 +112,7 @@ namespace practicaCys2
             labelPassword.BackColor = Color.FromArgb(8, 79, 122);
             labelPassword.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             labelPassword.ForeColor = Color.White;
-            labelPassword.Location = new Point(308, 290);
+            labelPassword.Location = new Point(95, 255);
             labelPassword.Margin = new Padding(0);
             labelPassword.Name = "labelPassword";
             labelPassword.Size = new Size(317, 30);
@@ -172,7 +171,12 @@ namespace practicaCys2
             // 
             panelClaro.Anchor = AnchorStyles.None;
             panelClaro.BackColor = Color.FromArgb(8, 79, 122);
+            panelClaro.Controls.Add(textBoxUser);
+            panelClaro.Controls.Add(label6);
+            panelClaro.Controls.Add(textBoxPassword);
             panelClaro.Controls.Add(pictureBox1);
+            panelClaro.Controls.Add(buttonAcceder);
+            panelClaro.Controls.Add(labelPassword);
             panelClaro.Location = new Point(221, 112);
             panelClaro.Name = "panelClaro";
             panelClaro.Padding = new Padding(0, 15, 0, 0);
@@ -373,6 +377,33 @@ namespace practicaCys2
             listaArchivos.Size = new Size(862, 352);
             listaArchivos.TabIndex = 0;
             // 
+            // textBoxUser
+            // 
+            textBoxUser.Anchor = AnchorStyles.None;
+            textBoxUser.BackColor = SystemColors.ControlLight;
+            textBoxUser.Location = new Point(95, 206);
+            textBoxUser.Margin = new Padding(0);
+            textBoxUser.Name = "textBoxUser";
+            textBoxUser.Size = new Size(300, 28);
+            textBoxUser.TabIndex = 5;
+            textBoxUser.TextAlign = HorizontalAlignment.Center;
+            textBoxUser.TextChanged += textBox1_TextChanged;
+            // 
+            // label6
+            // 
+            label6.Anchor = AnchorStyles.None;
+            label6.BackColor = Color.FromArgb(8, 79, 122);
+            label6.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label6.ForeColor = Color.White;
+            label6.Location = new Point(95, 164);
+            label6.Margin = new Padding(0);
+            label6.Name = "label6";
+            label6.Size = new Size(317, 30);
+            label6.TabIndex = 6;
+            label6.Text = "Introduzca el nombre de usuario";
+            label6.TextAlign = ContentAlignment.MiddleCenter;
+
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -387,10 +418,10 @@ namespace practicaCys2
             Name = "Form1";
             Text = "Form1";
             panelAcceso.ResumeLayout(false);
-            panelAcceso.PerformLayout();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             panelClaro.ResumeLayout(false);
+            panelClaro.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             panelCifrado.ResumeLayout(false);
             panelCifrado.PerformLayout();
@@ -426,5 +457,7 @@ namespace practicaCys2
         private Label label4;
         private Panel panel3;
         private Label label5;
+        private TextBox textBoxUser;
+        private Label label6;
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -35,7 +36,7 @@ namespace practicaCys2
         private void ListaArchivos_SelectedIndexChanged(object sender, EventArgs e)
         {
             compressAndEncrypt decryptAes = new compressAndEncrypt();
-
+            string user = textBoxUser.Text;
             if (listaArchivos.SelectedItem != null)
             {
                 string filePath = listaArchivos.SelectedItem.ToString();
@@ -45,7 +46,7 @@ namespace practicaCys2
                 byte[] encryptedFile = File.ReadAllBytes(filePath);
 
                 // Buscar el archivo de claves que coincide con el nombre base
-                string keysFilePath = Path.Combine(@"../../../../claves/", $"{baseFileName}_keys.zip");
+                string keysFilePath = Path.Combine(@"../../../../claves/"+user+"/", $"{baseFileName}_keys.zip");
 
                 if (!File.Exists(keysFilePath))
                 {
@@ -76,7 +77,7 @@ namespace practicaCys2
                 Dictionary<string, byte[]> decompressedFiles = decryptAes.DecompressFiles(decryptedFile);
 
                 // Guardar los archivos descomprimidos
-                string outputPath = @"../../../../archivos_descomprimidos/";
+                string outputPath = @"../../../../archivos_descomprimidos/"+user+"/";
                 if (!Directory.Exists(outputPath))
                     Directory.CreateDirectory(outputPath);
 
@@ -89,28 +90,53 @@ namespace practicaCys2
             }
         }
 
+        private bool checkUser(string user)
+        {
+            // Combina la ruta base con el nombre del usuario
+            string path = Path.Combine("../../../../claves", user);
 
+            // Retorna true si el directorio existe, false si no existe
+            return Directory.Exists(path);
+        }
 
         private void buttonAcceder_Click(object sender, EventArgs e)
         {
             panelListado.Visible = true;
             panelAcceso.Visible = false;
             panelCifrado.Visible = false;
-            /*Generar clave publica y privada*/
+            string passUsuario = textBoxPassword.Text;
+            string user = textBoxUser.Text;
             compressAndEncrypt compressAndEncrypt = new compressAndEncrypt();
-
             string publicKey, privateKey;
-            compressAndEncrypt.GenerateRsaKeys(out publicKey, out privateKey);
-            
-            clavesRSA = new string[2] { publicKey, privateKey };
-            byte[] clavePublica = Encoding.UTF8.GetBytes(publicKey);
-            clavePublica = compressAndEncrypt.CompressFiles(new Dictionary<string, byte[]> { { "publicKey", clavePublica } });
-            File.WriteAllBytes(@"../../../../claves/publicKey"+".zip", clavePublica);
+            clavesRSA = new string[2];
 
-            byte[] clavePrivada = compressAndEncrypt.EncryptPrivateKeyWithAes(clavesRSA[1], "pass");
-            clavePrivada = compressAndEncrypt.CompressFiles(new Dictionary<string, byte[]> { { "privateKey", clavePrivada } });
-            File.WriteAllBytes(@"../../../../claves/privateKey" + ".zip", clavePrivada);
-            MessageBox.Show("Claves generadas con éxito.");
+            if (!checkUser(user))
+            {
+                /*Generar clave publica y privada*/
+                compressAndEncrypt.GenerateRsaKeys(out publicKey, out privateKey);
+                clavesRSA = new string[2] { publicKey, privateKey };
+
+                byte[] clavePublica = Encoding.UTF8.GetBytes(publicKey);
+                clavePublica = compressAndEncrypt.CompressFiles(new Dictionary<string, byte[]> { { "publicKey", clavePublica } });
+
+                Directory.CreateDirectory(@"../../../../claves/" + user);
+                File.WriteAllBytes(@"../../../../claves/"+user+"/publicKey" + ".zip", clavePublica);
+
+                byte[] clavePrivada = compressAndEncrypt.EncryptPrivateKeyWithAes(clavesRSA[1], passUsuario);
+                clavePrivada = compressAndEncrypt.CompressFiles(new Dictionary<string, byte[]> { { "privateKey", clavePrivada } });
+                File.WriteAllBytes(@"../../../../claves/"+user+"/privateKey" + ".zip", clavePrivada);
+                MessageBox.Show("Claves generadas con éxito.");
+            }
+            else
+            {
+                clavesRSA[0] = Encoding.UTF8.GetString(compressAndEncrypt.DecompressFiles(File.ReadAllBytes(@"../../../../claves/" + user + "/publicKey.zip"))["publicKey"]);
+
+                byte[] privateKeyBytes = File.ReadAllBytes(@"../../../../claves/" + user + "/privateKey.zip");
+                Dictionary<string, byte[]> privateKeyDict = compressAndEncrypt.DecompressFiles(privateKeyBytes);
+                clavesRSA[1] = compressAndEncrypt.DecryptPrivateKeyWithAes(privateKeyDict["privateKey"], passUsuario);
+            }
+
+  
         }
 
         private void buttonCifrar_Click(object sender, EventArgs e)
@@ -159,6 +185,7 @@ namespace practicaCys2
         {
             if (listaExaminados.Items.Count > 0)
             {
+                string user = textBoxUser.Text;
                 compressAndEncrypt compressAndEncrypt = new compressAndEncrypt();
 
                 // Crear un diccionario para almacenar los archivos y su contenido
@@ -188,14 +215,16 @@ namespace practicaCys2
                 };
 
                 // Crear un nombre único basado en la fecha y hora actual
+                Directory.CreateDirectory(@"../../../../claves/" + user);
                 string uniqueFileName = $"output_{DateTime.Now.Ticks}";
-                string keysFilePath = Path.Combine(@"../../../../claves/", $"{uniqueFileName}_keys.zip");
+                string keysFilePath = Path.Combine(@"../../../../claves/"+user+"/", $"{uniqueFileName}("+user+")_keys.zip");
 
                 // Comprimir y cifrar los archivos seleccionados
                 byte[] encryptedZip = compressAndEncrypt.CompressAndEncryptFiles(files, key, iv);
 
                 // Guardar el archivo ZIP cifrado en una ubicación deseada con el mismo nombre único
-                string encryptedFilePath = Path.Combine(@"../../../../archivos/", $"{uniqueFileName}_encrypted.zip");
+                Directory.CreateDirectory(@"../../../../archivos/" + user);
+                string encryptedFilePath = Path.Combine(@"../../../../archivos/"+user+"/", $"{uniqueFileName}("+user+")_encrypted.zip");
                 File.WriteAllBytes(encryptedFilePath, encryptedZip);
 
                 MessageBox.Show($"Archivos comprimidos y cifrados con éxito.\nGuardado en: {encryptedFilePath}\nClaves guardadas en: {keysFilePath}");
@@ -217,7 +246,7 @@ namespace practicaCys2
                 panelCifrado.Visible = false;
 
 
-                string folderPath = @"../../../../archivos/";
+                string folderPath = @"../../../../archivos/"+user+"/";
                 string[] fnuevos = Directory.GetFiles(folderPath);
                 listaArchivos.Items.AddRange(fnuevos);
 
@@ -244,6 +273,11 @@ namespace practicaCys2
         }
 
         private void input_nombre_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
         }
