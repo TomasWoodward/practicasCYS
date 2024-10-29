@@ -32,7 +32,6 @@ namespace practicaCys2
         }
 
 
-        // Evento para manejar la selección del archivo en el ListBox
         private void ListaArchivos_SelectedIndexChanged(object sender, EventArgs e)
         {
             compressAndEncrypt decryptAes = new compressAndEncrypt();
