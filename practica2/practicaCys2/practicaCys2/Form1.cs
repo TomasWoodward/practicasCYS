@@ -204,6 +204,7 @@ namespace practicaCys2
             if (listaExaminados.Items.Count > 0)
             {
                 string user = textBoxUser.Text;
+                string nombreArchivo = textBoxNombreArchivo.Text;
                 compressAndEncrypt compressAndEncrypt = new compressAndEncrypt();
 
                 // Crear un diccionario para almacenar los archivos y su contenido
@@ -234,15 +235,15 @@ namespace practicaCys2
 
                 // Crear un nombre único basado en la fecha y hora actual
                 Directory.CreateDirectory(@"../../../../claves/" + user);
-                string uniqueFileName = $"output_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}";
-                string keysFilePath = Path.Combine(@"../../../../claves/" + user + "/", $"{uniqueFileName}(" + user + ")_keys.zip");
+                string uniqueFileName = nombreArchivo+$"_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}";
+                string keysFilePath = Path.Combine(@"../../../../claves/" + user + "/", $"{uniqueFileName}_keys.zip");
 
                 // Comprimir y cifrar los archivos seleccionados
                 byte[] encryptedZip = compressAndEncrypt.CompressAndEncryptFiles(files, key, iv);
 
                 // Guardar el archivo ZIP cifrado en una ubicación deseada con el mismo nombre único
                 Directory.CreateDirectory(@"../../../../archivos/" + user);
-                string encryptedFilePath = Path.Combine(@"../../../../archivos/" + user + "/", $"{uniqueFileName}(" + user + ")_encrypted.zip");
+                string encryptedFilePath = Path.Combine(@"../../../../archivos/" + user + "/", $"{uniqueFileName}_encrypted.zip");
                 File.WriteAllBytes(encryptedFilePath, encryptedZip);
 
                 MessageBox.Show($"Archivos comprimidos y cifrados con éxito.\nGuardado en: {encryptedFilePath}\nClaves guardadas en: {keysFilePath}");
