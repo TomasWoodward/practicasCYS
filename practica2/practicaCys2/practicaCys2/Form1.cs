@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace practicaCys2
             {
                 string filePath = listaArchivos.SelectedItem.ToString();
                 string baseFileName = Path.GetFileNameWithoutExtension(filePath).Replace("_encrypted", "");
-
+                //baseFileName = "../../../../"+;
                 // Leer el archivo encriptado como bytes
                 byte[] encryptedFile = File.ReadAllBytes(filePath);
 
@@ -85,8 +86,8 @@ namespace practicaCys2
                 {
                     File.WriteAllBytes(Path.Combine(outputPath, file.Key), file.Value);
                 }
-
-                MessageBox.Show("Archivo desencriptado y descomprimido exitosamente.");
+                outputPath = Path.GetFullPath(@"../../../../archivos_descomprimidos/" + user + "/");
+                Process.Start("explorer.exe", outputPath);
             }
         }
 
@@ -148,6 +149,11 @@ namespace practicaCys2
             if (Directory.Exists(folderPath))
             {
                 string[] fnuevos = Directory.GetFiles(folderPath);
+                /*foreach (var item in fnuevos)
+                {
+                    item.Replace("../../../../archivos/" + user + "/", "");
+                    item.Replace("_encrypted.zip", "");
+                }*/
                 listaArchivos.Items.AddRange(fnuevos);
             }
             else
@@ -267,6 +273,13 @@ namespace practicaCys2
 
                 string folderPath = @"../../../../archivos/" + user + "/";
                 string[] fnuevos = Directory.GetFiles(folderPath);
+                /*int i = 0;
+                foreach (var item in fnuevos)
+                {
+                    fnuevos[i]=item.Replace("../../../../archivos/" + user + "/", "");
+                    fnuevos[i] = item.Replace("_encrypted.zip", "");
+                    i++;
+                }*/
                 listaArchivos.Items.AddRange(fnuevos);
 
             }
