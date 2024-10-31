@@ -52,6 +52,7 @@ namespace practicaCys2
             buttonExaminar = new Button();
             listaExaminados = new ListBox();
             panelListado = new Panel();
+            label11 = new Label();
             panel2 = new Panel();
             label7 = new Label();
             pictureBox3 = new PictureBox();
@@ -177,7 +178,6 @@ namespace practicaCys2
             textBoxUser.Size = new Size(300, 28);
             textBoxUser.TabIndex = 5;
             textBoxUser.TextAlign = HorizontalAlignment.Center;
-           
             // 
             // label6
             // 
@@ -400,6 +400,7 @@ namespace practicaCys2
             // panelListado
             // 
             panelListado.BackColor = Color.FromArgb(5, 57, 91);
+            panelListado.Controls.Add(label11);
             panelListado.Controls.Add(panel2);
             panelListado.Controls.Add(buttonCifrar);
             panelListado.Controls.Add(listaArchivos);
@@ -410,6 +411,18 @@ namespace practicaCys2
             panelListado.Name = "panelListado";
             panelListado.Size = new Size(932, 553);
             panelListado.TabIndex = 2;
+            // 
+            // label11
+            // 
+            label11.Anchor = AnchorStyles.Bottom;
+            label11.AutoSize = true;
+            label11.Font = new Font("Tahoma", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label11.ForeColor = SystemColors.ButtonHighlight;
+            label11.Location = new Point(309, 500);
+            label11.Name = "label11";
+            label11.Size = new Size(294, 22);
+            label11.TabIndex = 5;
+            label11.Text = "Pulsa un archivo para desencriptarlo";
             // 
             // panel2
             // 
@@ -424,7 +437,6 @@ namespace practicaCys2
             panel2.Name = "panel2";
             panel2.Size = new Size(932, 64);
             panel2.TabIndex = 4;
-           
             // 
             // label7
             // 
@@ -502,7 +514,7 @@ namespace practicaCys2
             listaArchivos.Location = new Point(36, 155);
             listaArchivos.Margin = new Padding(0);
             listaArchivos.Name = "listaArchivos";
-            listaArchivos.Size = new Size(862, 352);
+            listaArchivos.Size = new Size(862, 330);
             listaArchivos.TabIndex = 0;
             // 
             // Form1
@@ -511,9 +523,9 @@ namespace practicaCys2
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
             ClientSize = new Size(932, 553);
-            Controls.Add(panelAcceso);
             Controls.Add(panelListado);
             Controls.Add(panelCifrado);
+            Controls.Add(panelAcceso);
             Margin = new Padding(3, 4, 3, 4);
             MinimumSize = new Size(950, 600);
             Name = "Form1";
@@ -531,6 +543,7 @@ namespace practicaCys2
             panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             panelListado.ResumeLayout(false);
+            panelListado.PerformLayout();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
@@ -571,5 +584,6 @@ namespace practicaCys2
         private Label label9;
         private Label label10;
         private TextBox textBoxNombreArchivo;
+        private Label label11;
     }
 }
