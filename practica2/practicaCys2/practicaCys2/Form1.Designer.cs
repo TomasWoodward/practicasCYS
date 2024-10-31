@@ -177,7 +177,7 @@ namespace practicaCys2
             textBoxUser.Size = new Size(300, 28);
             textBoxUser.TabIndex = 5;
             textBoxUser.TextAlign = HorizontalAlignment.Center;
-            textBoxUser.TextChanged += textBox1_TextChanged;
+           
             // 
             // label6
             // 
@@ -424,7 +424,7 @@ namespace practicaCys2
             panel2.Name = "panel2";
             panel2.Size = new Size(932, 64);
             panel2.TabIndex = 4;
-            panel2.Paint += panel2_Paint;
+           
             // 
             // label7
             // 

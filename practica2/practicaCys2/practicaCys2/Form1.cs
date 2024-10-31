@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -38,7 +39,10 @@ namespace practicaCys2
                 Directory.CreateDirectory(path3);
             string folderPath = @"../../../../archivos/";
             string[] files = Directory.GetFiles(folderPath);
-            listaArchivos.Items.AddRange(files);
+            
+            
+          
+            listaArchivos.Items.AddRange(files.Select(file => Path.GetFileName(file).Substring(0, Path.GetFileName(file).Length - "_encrypted.zip".Length)).ToArray());
 
             // Asociar el evento al ListBox para desencriptar y descomprimir al hacer clic
             listaArchivos.SelectedIndexChanged += ListaArchivos_SelectedIndexChanged;
@@ -51,7 +55,7 @@ namespace practicaCys2
             string user = textBoxUser.Text;
             if (listaArchivos.SelectedItem != null)
             {
-                string filePath = listaArchivos.SelectedItem.ToString();
+                string filePath = "../../../../archivos/"+user+"/"+listaArchivos.SelectedItem.ToString()+ "_encrypted.zip";
                 string baseFileName = Path.GetFileNameWithoutExtension(filePath).Replace("_encrypted", "");
                 //baseFileName = "../../../../"+;
                 // Leer el archivo encriptado como bytes
@@ -165,7 +169,7 @@ namespace practicaCys2
                     item.Replace("../../../../archivos/" + user + "/", "");
                     item.Replace("_encrypted.zip", "");
                 }*/
-                listaArchivos.Items.AddRange(fnuevos);
+                listaArchivos.Items.AddRange(fnuevos.Select(file => Path.GetFileName(file).Substring(0, Path.GetFileName(file).Length - "_encrypted.zip".Length)).ToArray());
             }
             else
             {
@@ -291,7 +295,14 @@ namespace practicaCys2
                     fnuevos[i] = item.Replace("_encrypted.zip", "");
                     i++;
                 }*/
-                listaArchivos.Items.AddRange(fnuevos);
+                foreach (var item in fnuevos)
+                {
+                    item.Replace("../../../../archivos/" + user + "/", "");
+                    
+                    item.Replace("_encrypted.zip", "");
+                    Console.WriteLine(item);
+                }
+                listaArchivos.Items.AddRange(fnuevos.Select(file => Path.GetFileName(file).Substring(0, Path.GetFileName(file).Length - "_encrypted.zip".Length)).ToArray());
 
             }
             else
@@ -310,24 +321,19 @@ namespace practicaCys2
         private void listarArchivos()
         {
             listaArchivos.Items.Clear();
+            string user = textBoxUser.Text;
             string folderPath = @"../../../../archivos/";
             string[] fnuevos = Directory.GetFiles(folderPath);
-            listaArchivos.Items.AddRange(fnuevos);
+            foreach (var item in fnuevos)
+            {
+                item.Replace("../../../../archivos/" + user + "/", "");
+
+                item.Replace("_encrypted.zip", "");
+                Console.WriteLine(item);
+            }
+            listaArchivos.Items.AddRange(fnuevos.Select(file => Path.GetFileName(file).Substring(0, Path.GetFileName(file).Length - "_encrypted.zip".Length)).ToArray());
         }
 
-        private void input_nombre_TextChanged(object sender, EventArgs e)
-        {
 
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panel2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
     }
 }
