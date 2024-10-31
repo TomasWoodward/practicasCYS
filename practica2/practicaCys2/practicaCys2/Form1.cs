@@ -24,10 +24,21 @@ namespace practicaCys2
             panelCifrado.Visible = false;
 
 
+
+            string path1 = (@"../../../../archivos");
+            string path2 = (@"../../../../archivos_descomprimidos");
+            string path3 = (@"../../../../claves");
+            if (!Directory.Exists(path1))
+                Directory.CreateDirectory(path1);
+            
+            if(!Directory.Exists(path2))
+                Directory.CreateDirectory(path2);
+
+            if (!Directory.Exists(path3))
+                Directory.CreateDirectory(path3);
             string folderPath = @"../../../../archivos/";
             string[] files = Directory.GetFiles(folderPath);
             listaArchivos.Items.AddRange(files);
-
 
             // Asociar el evento al ListBox para desencriptar y descomprimir al hacer clic
             listaArchivos.SelectedIndexChanged += ListaArchivos_SelectedIndexChanged;
