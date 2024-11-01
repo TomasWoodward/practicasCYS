@@ -13,10 +13,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 namespace practicaCys2
 {
-    public partial class Form1 : Form
+    public partial class FileLockr : Form
     {
         private string[] clavesRSA;
-        public Form1()
+        public FileLockr()
         {
             InitializeComponent();
             this.BackColor = SystemColors.GradientInactiveCaption;
@@ -25,10 +25,13 @@ namespace practicaCys2
             panelCifrado.Visible = false;
 
 
+            string path0 = (@"./Archivos_FileLockr");
+            string path1 = (@"./Archivos_FileLockr/archivos");
+            string path2 = (@"./Archivos_FileLockr/archivos_descomprimidos");
+            string path3 = (@"./Archivos_FileLockr/claves");
+            if (!Directory.Exists(path0))
+                Directory.CreateDirectory(path0);
 
-            string path1 = (@"../../../../archivos");
-            string path2 = (@"../../../../archivos_descomprimidos");
-            string path3 = (@"../../../../claves");
             if (!Directory.Exists(path1))
                 Directory.CreateDirectory(path1);
             
@@ -37,7 +40,7 @@ namespace practicaCys2
 
             if (!Directory.Exists(path3))
                 Directory.CreateDirectory(path3);
-            string folderPath = @"../../../../archivos/";
+            string folderPath = @"./Archivos_FileLockr/archivos/";
             string[] files = Directory.GetFiles(folderPath);
             
             
@@ -55,14 +58,14 @@ namespace practicaCys2
             string user = textBoxUser.Text;
             if (listaArchivos.SelectedItem != null)
             {
-                string filePath = "../../../../archivos/"+user+"/"+listaArchivos.SelectedItem.ToString()+ "_encrypted.zip";
+                string filePath = "./Archivos_FileLockr/archivos/" + user+"/"+listaArchivos.SelectedItem.ToString()+ "_encrypted.zip";
                 string baseFileName = Path.GetFileNameWithoutExtension(filePath).Replace("_encrypted", "");
                 //baseFileName = "../../../../"+;
                 // Leer el archivo encriptado como bytes
                 byte[] encryptedFile = File.ReadAllBytes(filePath);
 
                 // Buscar el archivo de claves que coincide con el nombre base
-                string keysFilePath = Path.Combine(@"../../../../claves/" + user + "/", $"{baseFileName}_keys.zip");
+                string keysFilePath = Path.Combine(@"./Archivos_FileLockr/claves/" + user + "/", $"{baseFileName}_keys.zip");
 
                 if (!File.Exists(keysFilePath))
                 {
@@ -93,7 +96,7 @@ namespace practicaCys2
                 Dictionary<string, byte[]> decompressedFiles = decryptAes.DecompressFiles(decryptedFile);
 
                 // Guardar los archivos descomprimidos
-                string outputPath = @"../../../../archivos_descomprimidos/" + user + "/";
+                string outputPath = @"./Archivos_FileLockr/archivos_descomprimidos/" + user + "/";
                 if (!Directory.Exists(outputPath))
                     Directory.CreateDirectory(outputPath);
 
@@ -101,7 +104,7 @@ namespace practicaCys2
                 {
                     File.WriteAllBytes(Path.Combine(outputPath, file.Key), file.Value);
                 }
-                outputPath = Path.GetFullPath(@"../../../../archivos_descomprimidos/" + user + "/");
+                outputPath = Path.GetFullPath(@"./Archivos_FileLockr/archivos_descomprimidos/" + user + "/");
                 Process.Start("explorer.exe", outputPath);
             }
         }
@@ -109,7 +112,7 @@ namespace practicaCys2
         private bool checkUser(string user)
         {
             // Combina la ruta base con el nombre del usuario
-            string path = Path.Combine("../../../../claves", user);
+            string path = Path.Combine("./Archivos_FileLockr/claves", user);
 
             // Retorna true si el directorio existe, false si no existe
             return Directory.Exists(path);
@@ -117,15 +120,20 @@ namespace practicaCys2
 
         private void buttonAcceder_Click(object sender, EventArgs e)
         {
-            panelListado.Visible = true;
-            panelAcceso.Visible = false;
-            panelCifrado.Visible = false;
+            
             string passUsuario = textBoxPassword.Text;
             string user = textBoxUser.Text;
             compressAndEncrypt compressAndEncrypt = new compressAndEncrypt();
             string publicKey, privateKey;
             clavesRSA = new string[2];
-
+            if (passUsuario == "" || user == "")
+            {
+                MessageBox.Show("Complete los campos de inicio de sesión.");
+                panelListado.Visible = false;
+                panelAcceso.Visible = true;
+                panelCifrado.Visible = false;
+                return;
+            }
             if (!checkUser(user))
             {
                 /*Generar clave publica y privada*/
@@ -135,18 +143,18 @@ namespace practicaCys2
                 byte[] clavePublica = Encoding.UTF8.GetBytes(publicKey);
                 clavePublica = compressAndEncrypt.CompressFiles(new Dictionary<string, byte[]> { { "publicKey", clavePublica } });
 
-                Directory.CreateDirectory(@"../../../../claves/" + user);
-                File.WriteAllBytes(@"../../../../claves/" + user + "/publicKey" + ".zip", clavePublica);
+                Directory.CreateDirectory(@"./Archivos_FileLockr/claves/" + user);
+                File.WriteAllBytes(@"./Archivos_FileLockr/claves/" + user + "/publicKey" + ".zip", clavePublica);
 
                 byte[] clavePrivada = compressAndEncrypt.EncryptPrivateKeyWithAes(clavesRSA[1], passUsuario);
                 clavePrivada = compressAndEncrypt.CompressFiles(new Dictionary<string, byte[]> { { "privateKey", clavePrivada } });
-                File.WriteAllBytes(@"../../../../claves/" + user + "/privateKey" + ".zip", clavePrivada);
+                File.WriteAllBytes(@"./Archivos_FileLockr/claves/" + user + "/privateKey" + ".zip", clavePrivada);
                 MessageBox.Show("Claves generadas con éxito.");
             }
             else
-            {
+            {   
                 clavesRSA[0] = Encoding.UTF8.GetString(compressAndEncrypt.DecompressFiles(File.ReadAllBytes(@"../../../../claves/" + user + "/publicKey.zip"))["publicKey"]);
-                byte[] privateKeyBytes = File.ReadAllBytes(@"../../../../claves/" + user + "/privateKey.zip");
+                byte[] privateKeyBytes = File.ReadAllBytes(@"./Archivos_FileLockr/claves/" + user + "/privateKey.zip");
                 Dictionary<string, byte[]> privateKeyDict = compressAndEncrypt.DecompressFiles(privateKeyBytes);
                 try
                 {
@@ -155,27 +163,29 @@ namespace practicaCys2
                 catch (Exception ex)
                 {
                     MessageBox.Show("Contraseña incorrecta.");
-                    Application.Exit();
+                    panelListado.Visible = false;
+                    panelAcceso.Visible = true;
+                    panelCifrado.Visible = false;
                     return;
                 }
 
             }
-            string folderPath = @"../../../../archivos/" + user + "/";
+            string folderPath = @"./Archivos_FileLockr/archivos/" + user + "/";
             if (Directory.Exists(folderPath))
             {
                 string[] fnuevos = Directory.GetFiles(folderPath);
-                /*foreach (var item in fnuevos)
-                {
-                    item.Replace("../../../../archivos/" + user + "/", "");
-                    item.Replace("_encrypted.zip", "");
-                }*/
+               
                 listaArchivos.Items.AddRange(fnuevos.Select(file => Path.GetFileName(file).Substring(0, Path.GetFileName(file).Length - "_encrypted.zip".Length)).ToArray());
+                
             }
             else
             {
+                panelListado.Visible = true;
+                panelAcceso.Visible = false;
+                panelCifrado.Visible = false;
                 MessageBox.Show("El usuario no tiene archivos para desencriptar.");
             }
-
+            
         }
 
         private void buttonCifrar_Click(object sender, EventArgs e)
@@ -255,16 +265,16 @@ namespace practicaCys2
                 };
 
                 // Crear un nombre único basado en la fecha y hora actual
-                Directory.CreateDirectory(@"../../../../claves/" + user);
+                Directory.CreateDirectory(@"./Archivos_FileLockr/claves/" + user);
                 string uniqueFileName = nombreArchivo+$"_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}";
-                string keysFilePath = Path.Combine(@"../../../../claves/" + user + "/", $"{uniqueFileName}_keys.zip");
+                string keysFilePath = Path.Combine(@"./Archivos_FileLockr/claves/" + user + "/", $"{uniqueFileName}_keys.zip");
 
                 // Comprimir y cifrar los archivos seleccionados
                 byte[] encryptedZip = compressAndEncrypt.CompressAndEncryptFiles(files, key, iv);
 
                 // Guardar el archivo ZIP cifrado en una ubicación deseada con el mismo nombre único
-                Directory.CreateDirectory(@"../../../../archivos/" + user);
-                string encryptedFilePath = Path.Combine(@"../../../../archivos/" + user + "/", $"{uniqueFileName}_encrypted.zip");
+                Directory.CreateDirectory(@"./Archivos_FileLockr/archivos/" + user);
+                string encryptedFilePath = Path.Combine(@"./Archivos_FileLockr/archivos/" + user + "/", $"{uniqueFileName}_encrypted.zip");
                 File.WriteAllBytes(encryptedFilePath, encryptedZip);
 
                 MessageBox.Show($"Archivos comprimidos y cifrados con éxito.\nGuardado en: {encryptedFilePath}\nClaves guardadas en: {keysFilePath}");
@@ -286,18 +296,12 @@ namespace practicaCys2
                 panelCifrado.Visible = false;
 
 
-                string folderPath = @"../../../../archivos/" + user + "/";
+                string folderPath = @"./Archivos_FileLockr/archivos/" + user + "/";
                 string[] fnuevos = Directory.GetFiles(folderPath);
-                /*int i = 0;
+                
                 foreach (var item in fnuevos)
                 {
-                    fnuevos[i]=item.Replace("../../../../archivos/" + user + "/", "");
-                    fnuevos[i] = item.Replace("_encrypted.zip", "");
-                    i++;
-                }*/
-                foreach (var item in fnuevos)
-                {
-                    item.Replace("../../../../archivos/" + user + "/", "");
+                    item.Replace("./Archivos_FileLockr/archivos/" + user + "/", "");
                     
                     item.Replace("_encrypted.zip", "");
                     Console.WriteLine(item);
@@ -322,11 +326,11 @@ namespace practicaCys2
         {
             listaArchivos.Items.Clear();
             string user = textBoxUser.Text;
-            string folderPath = @"../../../../archivos/";
+            string folderPath = @"./Archivos_FileLockr/archivos/";
             string[] fnuevos = Directory.GetFiles(folderPath);
             foreach (var item in fnuevos)
             {
-                item.Replace("../../../../archivos/" + user + "/", "");
+                item.Replace("./Archivos_FileLockr/archivos/" + user + "/", "");
 
                 item.Replace("_encrypted.zip", "");
                 Console.WriteLine(item);

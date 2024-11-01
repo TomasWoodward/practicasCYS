@@ -1,6 +1,6 @@
 namespace practicaCys2
 {
-    partial class Form1
+    partial class FileLockr
     {
         /// <summary>
         ///  Required designer variable.
@@ -26,7 +26,8 @@ namespace practicaCys2
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FileLockr));
             buttonAcceder = new Button();
             panelAcceso = new Panel();
             panel1 = new Panel();
@@ -519,6 +520,7 @@ namespace practicaCys2
             // 
             // Form1
             // 
+            
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
@@ -528,8 +530,8 @@ namespace practicaCys2
             Controls.Add(panelAcceso);
             Margin = new Padding(3, 4, 3, 4);
             MinimumSize = new Size(950, 600);
-            Name = "Form1";
-            Text = "Form1";
+            Name = "FileLockr";
+            Text = "FileLockr";
             panelAcceso.ResumeLayout(false);
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
