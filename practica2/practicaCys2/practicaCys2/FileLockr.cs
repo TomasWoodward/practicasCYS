@@ -153,12 +153,15 @@ namespace practicaCys2
             }
             else
             {   
-                clavesRSA[0] = Encoding.UTF8.GetString(compressAndEncrypt.DecompressFiles(File.ReadAllBytes(@"../../../../claves/" + user + "/publicKey.zip"))["publicKey"]);
+                clavesRSA[0] = Encoding.UTF8.GetString(compressAndEncrypt.DecompressFiles(File.ReadAllBytes(@"./Archivos_FileLockr/claves/" + user + "/publicKey.zip"))["publicKey"]);
                 byte[] privateKeyBytes = File.ReadAllBytes(@"./Archivos_FileLockr/claves/" + user + "/privateKey.zip");
                 Dictionary<string, byte[]> privateKeyDict = compressAndEncrypt.DecompressFiles(privateKeyBytes);
                 try
                 {
                     clavesRSA[1] = compressAndEncrypt.DecryptPrivateKeyWithAes(privateKeyDict["privateKey"], passUsuario);
+                    panelListado.Visible = true;
+                    panelAcceso.Visible = false;
+                    panelCifrado.Visible = false;
                 }
                 catch (Exception ex)
                 {
