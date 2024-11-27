@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 namespace practicaCys2
 {
     public partial class FileLockr : Form
@@ -171,6 +172,10 @@ namespace practicaCys2
                     panelCifrado.Visible = false;
                     return;
                 }
+
+                ApiService apiService = new ApiService();
+                Task<string> task = apiService.LoginAsync("carol", "1234");
+                Console.WriteLine(task.Result);
 
             }
             string folderPath = @"./Archivos_FileLockr/archivos/" + user + "/";
