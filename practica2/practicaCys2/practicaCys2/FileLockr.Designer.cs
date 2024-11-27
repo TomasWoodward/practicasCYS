@@ -26,7 +26,6 @@ namespace practicaCys2
         /// </summary>
         private void InitializeComponent()
         {
-            
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FileLockr));
             buttonAcceder = new Button();
             panelAcceso = new Panel();
@@ -61,6 +60,7 @@ namespace practicaCys2
             label1 = new Label();
             buttonCifrar = new Button();
             listaArchivos = new ListBox();
+            buttonCompartir = new Button();
             panelAcceso.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
@@ -401,6 +401,7 @@ namespace practicaCys2
             // panelListado
             // 
             panelListado.BackColor = Color.FromArgb(5, 57, 91);
+            panelListado.Controls.Add(buttonCompartir);
             panelListado.Controls.Add(label11);
             panelListado.Controls.Add(panel2);
             panelListado.Controls.Add(buttonCifrar);
@@ -518,9 +519,21 @@ namespace practicaCys2
             listaArchivos.Size = new Size(862, 330);
             listaArchivos.TabIndex = 0;
             // 
-            // Form1
+            // buttonCompartir
             // 
-            
+            buttonCompartir.BackColor = SystemColors.ButtonHighlight;
+            buttonCompartir.FlatStyle = FlatStyle.Flat;
+            buttonCompartir.Font = new Font("Tahoma", 10.2F);
+            buttonCompartir.Location = new Point(36, 88);
+            buttonCompartir.Margin = new Padding(3, 4, 3, 4);
+            buttonCompartir.Name = "buttonCompartir";
+            buttonCompartir.Size = new Size(100, 40);
+            buttonCompartir.TabIndex = 6;
+            buttonCompartir.Text = "Compartir";
+            buttonCompartir.UseVisualStyleBackColor = false;
+            // 
+            // FileLockr
+            // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
@@ -587,5 +600,6 @@ namespace practicaCys2
         private Label label10;
         private TextBox textBoxNombreArchivo;
         private Label label11;
+        private Button buttonCompartir;
     }
 }
