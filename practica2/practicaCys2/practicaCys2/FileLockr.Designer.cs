@@ -26,7 +26,6 @@ namespace practicaCys2
         /// </summary>
         private void InitializeComponent()
         {
-            
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FileLockr));
             buttonAcceder = new Button();
             panelAcceso = new Panel();
@@ -83,10 +82,10 @@ namespace practicaCys2
             buttonAcceder.FlatAppearance.MouseDownBackColor = SystemColors.ButtonHighlight;
             buttonAcceder.FlatAppearance.MouseOverBackColor = Color.Gray;
             buttonAcceder.FlatStyle = FlatStyle.Flat;
-            buttonAcceder.Location = new Point(258, 362);
+            buttonAcceder.Location = new Point(258, 344);
             buttonAcceder.Margin = new Padding(0);
             buttonAcceder.Name = "buttonAcceder";
-            buttonAcceder.Size = new Size(140, 40);
+            buttonAcceder.Size = new Size(140, 38);
             buttonAcceder.TabIndex = 0;
             buttonAcceder.Text = "Acceder";
             buttonAcceder.UseVisualStyleBackColor = false;
@@ -103,7 +102,7 @@ namespace practicaCys2
             panelAcceso.Location = new Point(0, 0);
             panelAcceso.Margin = new Padding(3, 4, 3, 4);
             panelAcceso.Name = "panelAcceso";
-            panelAcceso.Size = new Size(932, 553);
+            panelAcceso.Size = new Size(934, 533);
             panelAcceso.TabIndex = 1;
             // 
             // panel1
@@ -116,15 +115,15 @@ namespace practicaCys2
             panel1.ForeColor = SystemColors.ActiveCaptionText;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(932, 64);
+            panel1.Size = new Size(934, 61);
             panel1.TabIndex = 3;
             // 
             // pictureBox2
             // 
             pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            pictureBox2.Location = new Point(12, 15);
+            pictureBox2.Location = new Point(12, 14);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(48, 34);
+            pictureBox2.Size = new Size(48, 32);
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox2.TabIndex = 7;
             pictureBox2.TabStop = false;
@@ -135,9 +134,9 @@ namespace practicaCys2
             label2.AutoSize = true;
             label2.Font = new Font("Berlin Sans FB", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label2.ForeColor = SystemColors.ButtonHighlight;
-            label2.Location = new Point(811, 20);
+            label2.Location = new Point(813, 19);
             label2.Name = "label2";
-            label2.Size = new Size(99, 26);
+            label2.Size = new Size(81, 21);
             label2.TabIndex = 5;
             label2.Text = "FileLockr";
             // 
@@ -147,9 +146,9 @@ namespace practicaCys2
             label3.Font = new Font("Tahoma", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label3.ForeColor = SystemColors.ButtonHighlight;
             label3.ImageAlign = ContentAlignment.TopLeft;
-            label3.Location = new Point(64, 20);
+            label3.Location = new Point(64, 19);
             label3.Name = "label3";
-            label3.Size = new Size(76, 22);
+            label3.Size = new Size(62, 18);
             label3.TabIndex = 0;
             label3.Text = "ACCESO";
             // 
@@ -163,20 +162,20 @@ namespace practicaCys2
             panelClaro.Controls.Add(pictureBox1);
             panelClaro.Controls.Add(buttonAcceder);
             panelClaro.Controls.Add(labelPassword);
-            panelClaro.Location = new Point(138, 82);
+            panelClaro.Location = new Point(139, 82);
             panelClaro.Name = "panelClaro";
-            panelClaro.Padding = new Padding(0, 15, 0, 0);
-            panelClaro.Size = new Size(656, 448);
+            panelClaro.Padding = new Padding(0, 14, 0, 0);
+            panelClaro.Size = new Size(656, 426);
             panelClaro.TabIndex = 6;
             // 
             // textBoxUser
             // 
             textBoxUser.Anchor = AnchorStyles.None;
             textBoxUser.BackColor = SystemColors.ControlLight;
-            textBoxUser.Location = new Point(178, 210);
+            textBoxUser.Location = new Point(178, 200);
             textBoxUser.Margin = new Padding(0);
             textBoxUser.Name = "textBoxUser";
-            textBoxUser.Size = new Size(300, 28);
+            textBoxUser.Size = new Size(300, 24);
             textBoxUser.TabIndex = 5;
             textBoxUser.TextAlign = HorizontalAlignment.Center;
             // 
@@ -186,10 +185,10 @@ namespace practicaCys2
             label6.BackColor = Color.FromArgb(8, 79, 122);
             label6.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label6.ForeColor = Color.White;
-            label6.Location = new Point(178, 170);
+            label6.Location = new Point(178, 162);
             label6.Margin = new Padding(0);
             label6.Name = "label6";
-            label6.Size = new Size(300, 30);
+            label6.Size = new Size(300, 28);
             label6.TabIndex = 6;
             label6.Text = "Introduzca el nombre de usuario";
             label6.TextAlign = ContentAlignment.MiddleCenter;
@@ -198,10 +197,10 @@ namespace practicaCys2
             // 
             textBoxPassword.Anchor = AnchorStyles.None;
             textBoxPassword.BackColor = SystemColors.ControlLight;
-            textBoxPassword.Location = new Point(178, 302);
+            textBoxPassword.Location = new Point(178, 287);
             textBoxPassword.Margin = new Padding(0);
             textBoxPassword.Name = "textBoxPassword";
-            textBoxPassword.Size = new Size(300, 28);
+            textBoxPassword.Size = new Size(300, 24);
             textBoxPassword.TabIndex = 1;
             textBoxPassword.TextAlign = HorizontalAlignment.Center;
             textBoxPassword.UseSystemPasswordChar = true;
@@ -212,10 +211,10 @@ namespace practicaCys2
             pictureBox1.BackColor = Color.FromArgb(8, 79, 122);
             pictureBox1.Dock = DockStyle.Top;
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(0, 15);
+            pictureBox1.Location = new Point(0, 14);
             pictureBox1.Margin = new Padding(0, 10, 0, 0);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(656, 130);
+            pictureBox1.Size = new Size(656, 124);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 4;
             pictureBox1.TabStop = false;
@@ -226,10 +225,10 @@ namespace practicaCys2
             labelPassword.BackColor = Color.FromArgb(8, 79, 122);
             labelPassword.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             labelPassword.ForeColor = Color.White;
-            labelPassword.Location = new Point(171, 260);
+            labelPassword.Location = new Point(171, 247);
             labelPassword.Margin = new Padding(0);
             labelPassword.Name = "labelPassword";
-            labelPassword.Size = new Size(315, 30);
+            labelPassword.Size = new Size(315, 28);
             labelPassword.TabIndex = 2;
             labelPassword.Text = "Introduzca la contraseña de datos";
             labelPassword.TextAlign = ContentAlignment.MiddleCenter;
@@ -248,16 +247,16 @@ namespace practicaCys2
             panelCifrado.Location = new Point(0, 0);
             panelCifrado.Margin = new Padding(3, 4, 3, 4);
             panelCifrado.Name = "panelCifrado";
-            panelCifrado.Size = new Size(932, 553);
+            panelCifrado.Size = new Size(934, 533);
             panelCifrado.TabIndex = 3;
             // 
             // textBoxNombreArchivo
             // 
             textBoxNombreArchivo.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBoxNombreArchivo.Location = new Point(560, 147);
+            textBoxNombreArchivo.Location = new Point(562, 140);
             textBoxNombreArchivo.Name = "textBoxNombreArchivo";
             textBoxNombreArchivo.PlaceholderText = "Introduce un nombre de archivo";
-            textBoxNombreArchivo.Size = new Size(316, 26);
+            textBoxNombreArchivo.Size = new Size(316, 22);
             textBoxNombreArchivo.TabIndex = 6;
             // 
             // panel3
@@ -272,7 +271,7 @@ namespace practicaCys2
             panel3.ForeColor = SystemColors.ActiveCaptionText;
             panel3.Location = new Point(0, 0);
             panel3.Name = "panel3";
-            panel3.Size = new Size(932, 64);
+            panel3.Size = new Size(934, 61);
             panel3.TabIndex = 5;
             // 
             // label10
@@ -281,9 +280,9 @@ namespace practicaCys2
             label10.AutoSize = true;
             label10.Font = new Font("Berlin Sans FB", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label10.ForeColor = SystemColors.ButtonHighlight;
-            label10.Location = new Point(811, 20);
+            label10.Location = new Point(813, 19);
             label10.Name = "label10";
-            label10.Size = new Size(99, 26);
+            label10.Size = new Size(81, 21);
             label10.TabIndex = 9;
             label10.Text = "FileLockr";
             // 
@@ -293,18 +292,18 @@ namespace practicaCys2
             label5.AutoSize = true;
             label5.Font = new Font("Berlin Sans FB", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label5.ForeColor = SystemColors.ButtonHighlight;
-            label5.Location = new Point(1531, 20);
+            label5.Location = new Point(1533, 19);
             label5.Name = "label5";
-            label5.Size = new Size(99, 26);
+            label5.Size = new Size(81, 21);
             label5.TabIndex = 8;
             label5.Text = "FileLockr";
             // 
             // pictureBox4
             // 
             pictureBox4.Image = (Image)resources.GetObject("pictureBox4.Image");
-            pictureBox4.Location = new Point(12, 15);
+            pictureBox4.Location = new Point(12, 14);
             pictureBox4.Name = "pictureBox4";
-            pictureBox4.Size = new Size(48, 34);
+            pictureBox4.Size = new Size(48, 32);
             pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox4.TabIndex = 7;
             pictureBox4.TabStop = false;
@@ -315,9 +314,9 @@ namespace practicaCys2
             label8.AutoSize = true;
             label8.Font = new Font("Berlin Sans FB", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label8.ForeColor = SystemColors.ButtonHighlight;
-            label8.Location = new Point(2275, 20);
+            label8.Location = new Point(2277, 19);
             label8.Name = "label8";
-            label8.Size = new Size(99, 26);
+            label8.Size = new Size(81, 21);
             label8.TabIndex = 5;
             label8.Text = "FileLockr";
             // 
@@ -327,9 +326,9 @@ namespace practicaCys2
             label9.Font = new Font("Tahoma", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label9.ForeColor = SystemColors.ButtonHighlight;
             label9.ImageAlign = ContentAlignment.TopLeft;
-            label9.Location = new Point(64, 20);
+            label9.Location = new Point(64, 19);
             label9.Name = "label9";
-            label9.Size = new Size(104, 22);
+            label9.Size = new Size(86, 18);
             label9.TabIndex = 0;
             label9.Text = "ENCRIPTAR";
             // 
@@ -342,9 +341,9 @@ namespace practicaCys2
             button_back.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 255, 128);
             button_back.Font = new Font("Wingdings 3", 9F, FontStyle.Regular, GraphicsUnit.Point, 2);
             button_back.Image = (Image)resources.GetObject("button_back.Image");
-            button_back.Location = new Point(52, 439);
+            button_back.Location = new Point(52, 425);
             button_back.Name = "button_back";
-            button_back.Size = new Size(42, 42);
+            button_back.Size = new Size(42, 40);
             button_back.TabIndex = 4;
             button_back.UseVisualStyleBackColor = true;
             button_back.Click += button_back_Click;
@@ -357,10 +356,10 @@ namespace practicaCys2
             buttonConfirmar.FlatAppearance.MouseDownBackColor = SystemColors.ButtonHighlight;
             buttonConfirmar.FlatAppearance.MouseOverBackColor = Color.Gray;
             buttonConfirmar.FlatStyle = FlatStyle.Flat;
-            buttonConfirmar.Location = new Point(773, 439);
+            buttonConfirmar.Location = new Point(775, 425);
             buttonConfirmar.Margin = new Padding(3, 4, 3, 4);
             buttonConfirmar.Name = "buttonConfirmar";
-            buttonConfirmar.Size = new Size(103, 38);
+            buttonConfirmar.Size = new Size(103, 36);
             buttonConfirmar.TabIndex = 2;
             buttonConfirmar.Text = "Confirmar";
             buttonConfirmar.UseVisualStyleBackColor = false;
@@ -373,10 +372,10 @@ namespace practicaCys2
             buttonExaminar.FlatAppearance.MouseDownBackColor = SystemColors.ButtonHighlight;
             buttonExaminar.FlatAppearance.MouseOverBackColor = Color.Gray;
             buttonExaminar.FlatStyle = FlatStyle.Flat;
-            buttonExaminar.Location = new Point(52, 140);
+            buttonExaminar.Location = new Point(52, 133);
             buttonExaminar.Margin = new Padding(3, 4, 3, 4);
             buttonExaminar.Name = "buttonExaminar";
-            buttonExaminar.Size = new Size(99, 38);
+            buttonExaminar.Size = new Size(99, 36);
             buttonExaminar.TabIndex = 1;
             buttonExaminar.Text = "Examinar";
             buttonExaminar.UseVisualStyleBackColor = false;
@@ -390,12 +389,12 @@ namespace practicaCys2
             listaExaminados.Font = new Font("Tahoma", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             listaExaminados.ForeColor = SystemColors.Window;
             listaExaminados.FormattingEnabled = true;
-            listaExaminados.ItemHeight = 22;
-            listaExaminados.Location = new Point(52, 195);
+            listaExaminados.ItemHeight = 17;
+            listaExaminados.Location = new Point(52, 185);
             listaExaminados.Margin = new Padding(10);
             listaExaminados.Name = "listaExaminados";
             listaExaminados.ScrollAlwaysVisible = true;
-            listaExaminados.Size = new Size(824, 220);
+            listaExaminados.Size = new Size(826, 204);
             listaExaminados.TabIndex = 0;
             // 
             // panelListado
@@ -410,7 +409,7 @@ namespace practicaCys2
             panelListado.Location = new Point(0, 0);
             panelListado.Margin = new Padding(3, 4, 3, 4);
             panelListado.Name = "panelListado";
-            panelListado.Size = new Size(932, 553);
+            panelListado.Size = new Size(934, 533);
             panelListado.TabIndex = 2;
             // 
             // label11
@@ -419,9 +418,9 @@ namespace practicaCys2
             label11.AutoSize = true;
             label11.Font = new Font("Tahoma", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label11.ForeColor = SystemColors.ButtonHighlight;
-            label11.Location = new Point(309, 500);
+            label11.Location = new Point(310, 483);
             label11.Name = "label11";
-            label11.Size = new Size(294, 22);
+            label11.Size = new Size(241, 18);
             label11.TabIndex = 5;
             label11.Text = "Pulsa un archivo para desencriptarlo";
             // 
@@ -436,7 +435,7 @@ namespace practicaCys2
             panel2.ForeColor = SystemColors.ActiveCaptionText;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(932, 64);
+            panel2.Size = new Size(934, 61);
             panel2.TabIndex = 4;
             // 
             // label7
@@ -445,18 +444,18 @@ namespace practicaCys2
             label7.AutoSize = true;
             label7.Font = new Font("Berlin Sans FB", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label7.ForeColor = SystemColors.ButtonHighlight;
-            label7.Location = new Point(811, 20);
+            label7.Location = new Point(813, 19);
             label7.Name = "label7";
-            label7.Size = new Size(99, 26);
+            label7.Size = new Size(81, 21);
             label7.TabIndex = 8;
             label7.Text = "FileLockr";
             // 
             // pictureBox3
             // 
             pictureBox3.Image = (Image)resources.GetObject("pictureBox3.Image");
-            pictureBox3.Location = new Point(12, 15);
+            pictureBox3.Location = new Point(12, 14);
             pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(48, 34);
+            pictureBox3.Size = new Size(48, 32);
             pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox3.TabIndex = 7;
             pictureBox3.TabStop = false;
@@ -467,9 +466,9 @@ namespace practicaCys2
             label4.AutoSize = true;
             label4.Font = new Font("Berlin Sans FB", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label4.ForeColor = SystemColors.ButtonHighlight;
-            label4.Location = new Point(1543, 20);
+            label4.Location = new Point(1545, 19);
             label4.Name = "label4";
-            label4.Size = new Size(99, 26);
+            label4.Size = new Size(81, 21);
             label4.TabIndex = 5;
             label4.Text = "FileLockr";
             // 
@@ -479,9 +478,9 @@ namespace practicaCys2
             label1.Font = new Font("Tahoma", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.ForeColor = SystemColors.ButtonHighlight;
             label1.ImageAlign = ContentAlignment.TopLeft;
-            label1.Location = new Point(64, 20);
+            label1.Location = new Point(64, 19);
             label1.Name = "label1";
-            label1.Size = new Size(67, 22);
+            label1.Size = new Size(56, 18);
             label1.TabIndex = 0;
             label1.Text = "INICIO";
             // 
@@ -494,10 +493,10 @@ namespace practicaCys2
             buttonCifrar.FlatAppearance.MouseOverBackColor = Color.Gray;
             buttonCifrar.FlatStyle = FlatStyle.Flat;
             buttonCifrar.Font = new Font("Tahoma", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            buttonCifrar.Location = new Point(798, 88);
+            buttonCifrar.Location = new Point(800, 84);
             buttonCifrar.Margin = new Padding(3, 4, 3, 4);
             buttonCifrar.Name = "buttonCifrar";
-            buttonCifrar.Size = new Size(100, 40);
+            buttonCifrar.Size = new Size(100, 38);
             buttonCifrar.TabIndex = 1;
             buttonCifrar.Text = "Cifrar";
             buttonCifrar.UseVisualStyleBackColor = false;
@@ -511,25 +510,24 @@ namespace practicaCys2
             listaArchivos.Font = new Font("Tahoma", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             listaArchivos.ForeColor = SystemColors.Window;
             listaArchivos.FormattingEnabled = true;
-            listaArchivos.ItemHeight = 22;
-            listaArchivos.Location = new Point(36, 155);
+            listaArchivos.ItemHeight = 17;
+            listaArchivos.Location = new Point(36, 147);
             listaArchivos.Margin = new Padding(0);
             listaArchivos.Name = "listaArchivos";
-            listaArchivos.Size = new Size(862, 330);
+            listaArchivos.Size = new Size(864, 306);
             listaArchivos.TabIndex = 0;
             // 
-            // Form1
+            // FileLockr
             // 
-            
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
-            ClientSize = new Size(932, 553);
+            ClientSize = new Size(934, 533);
             Controls.Add(panelListado);
             Controls.Add(panelCifrado);
             Controls.Add(panelAcceso);
             Margin = new Padding(3, 4, 3, 4);
-            MinimumSize = new Size(950, 600);
+            MinimumSize = new Size(950, 572);
             Name = "FileLockr";
             Text = "FileLockr";
             panelAcceso.ResumeLayout(false);
