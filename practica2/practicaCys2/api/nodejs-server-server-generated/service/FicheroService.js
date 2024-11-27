@@ -1,4 +1,5 @@
 'use strict';
+const db=require('../db.js');
 
 
 /**
@@ -8,25 +9,15 @@
  **/
 exports.ficherosGET = function() {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "idFichero" : 0,
-  "kfile" : "kfile",
-  "ruta" : "ruta",
-  "usuario" : 6,
-  "iv" : "iv"
-}, {
-  "idFichero" : 0,
-  "kfile" : "kfile",
-  "ruta" : "ruta",
-  "usuario" : 6,
-  "iv" : "iv"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const query = 'SELECT * FROM ficheros';
+    
+    db.query(query, (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(results);
+      }
+    });
   });
 }
 
@@ -39,7 +30,15 @@ exports.ficherosGET = function() {
  **/
 exports.ficherosIdFicheroDELETE = function(idFichero) {
   return new Promise(function(resolve, reject) {
-    resolve();
+    const query = 'DELETE FROM ficheros WHERE idFichero = ?';
+    
+    db.query(query, [idFichero], (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve({ message: 'Fichero eliminado correctamente' });
+      }
+    });
   });
 }
 
@@ -52,19 +51,17 @@ exports.ficherosIdFicheroDELETE = function(idFichero) {
  **/
 exports.ficherosIdFicheroGET = function(idFichero) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {
-  "idFichero" : 0,
-  "kfile" : "kfile",
-  "ruta" : "ruta",
-  "usuario" : 6,
-  "iv" : "iv"
-};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const query = 'SELECT * FROM ficheros WHERE idFichero = ?';
+    
+    db.query(query, [idFichero], (error, results) => {
+      if (error) {
+        reject(error);
+      } else if (results.length === 0) {
+        reject(error);
+      } else {
+        resolve(results[0]);
+      }
+    });
   });
 }
 
@@ -78,7 +75,16 @@ exports.ficherosIdFicheroGET = function(idFichero) {
  **/
 exports.ficherosIdFicheroPUT = function(body,idFichero) {
   return new Promise(function(resolve, reject) {
-    resolve();
+    const { ruta, usuario, iv,kfile} = body;
+    const query = 'UPDATE fichero SET ruta = ?, usuario = ?,iv=?, kfile=? WHERE idFichero = ?';
+    
+    db.query(query, [ruta,usuario,iv,kfile, idFichero], (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve({ message: 'Fichero actualizado correctamente' });
+      }
+    });
   });
 }
 
@@ -91,19 +97,16 @@ exports.ficherosIdFicheroPUT = function(body,idFichero) {
  **/
 exports.ficherosPOST = function(body) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {
-  "idFichero" : 0,
-  "kfile" : "kfile",
-  "ruta" : "ruta",
-  "usuario" : 6,
-  "iv" : "iv"
-};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const {ruta, usuario, iv,kfile} = body;
+    const query = 'INSERT INTO ficheros (ruta, usuario, iv,kfile) VALUES (?,?, ?, ?)';
+    
+    db.query(query, [ruta, usuario, iv,kfile], (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve({ message: 'Fichero creado correctamente', id: idFichero });
+      }
+    });
   });
 }
 

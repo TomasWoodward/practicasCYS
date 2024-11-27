@@ -1,5 +1,5 @@
 'use strict';
-
+const db=require('../db.js');
 
 /**
  * Obtener todos los usuarios
@@ -8,23 +8,15 @@
  **/
 exports.usuariosGET = function() {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "clave" : "clave",
-  "idUsuario" : 0,
-  "publicKey" : "publicKey",
-  "nombre" : "nombre"
-}, {
-  "clave" : "clave",
-  "idUsuario" : 0,
-  "publicKey" : "publicKey",
-  "nombre" : "nombre"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const query = 'SELECT * FROM usuarios';
+    
+    db.query(query, (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(results);
+      }
+    });
   });
 }
 
@@ -37,7 +29,15 @@ exports.usuariosGET = function() {
  **/
 exports.usuariosIdUsuarioDELETE = function(idUsuario) {
   return new Promise(function(resolve, reject) {
-    resolve();
+    const query = 'DELETE FROM usuarios WHERE idUsuario = ?';
+    
+    db.query(query, [idUsuario], (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve({ message: 'Usuario eliminado correctamente' });
+      }
+    });
   });
 }
 
@@ -50,18 +50,17 @@ exports.usuariosIdUsuarioDELETE = function(idUsuario) {
  **/
 exports.usuariosIdUsuarioGET = function(idUsuario) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {
-  "clave" : "clave",
-  "idUsuario" : 0,
-  "publicKey" : "publicKey",
-  "nombre" : "nombre"
-};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const query = 'SELECT * FROM usuarios WHERE idUsuario = ?';
+    
+    db.query(query, [idUsuario], (error, results) => {
+      if (error) {
+        reject(error);
+      } else if (results.length === 0) {
+        reject(error);
+      } else {
+        resolve(results[0]);
+      }
+    });
   });
 }
 
@@ -75,7 +74,16 @@ exports.usuariosIdUsuarioGET = function(idUsuario) {
  **/
 exports.usuariosIdUsuarioPUT = function(body,idUsuario) {
   return new Promise(function(resolve, reject) {
-    resolve();
+    const { nombre, usuario, clave} = body;
+    const query = 'UPDATE usuarios SET nombre = ?, clave = ? WHERE idUsuario = ?';
+    
+    db.query(query, [nombre, clave, idUsuario], (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve({ message: 'Usuario actualizado correctamente' });
+      }
+    });
   });
 }
 
@@ -88,18 +96,16 @@ exports.usuariosIdUsuarioPUT = function(body,idUsuario) {
  **/
 exports.usuariosPOST = function(body) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {
-  "clave" : "clave",
-  "idUsuario" : 0,
-  "publicKey" : "publicKey",
-  "nombre" : "nombre"
-};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const { nombre, clave ,publicKey} = body;
+    const query = 'INSERT INTO usuarios (nombre, clave , publicKey) VALUES (?,?, ?)';
+    
+    db.query(query, [nombre, clave, publicKey], (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve({ message: 'Usuario creado correctamente', id: results.insertId });
+      }
+    });
   });
 }
 

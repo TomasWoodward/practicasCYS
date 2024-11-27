@@ -10,13 +10,13 @@ namespace practicaCys2
     public class ApiService
     {
         private readonly HttpClient _httpClient;
-
+        private string BaseAddress;
         public ApiService()
         {
             // Inicializamos HttpClient con la URL base de tu servidor
             _httpClient = new HttpClient
             {
-                BaseAddress = new Uri("https://localhost:8080") // Cambia esta URL por la de tu servidor
+                BaseAddress = new Uri("https://localhost:8080/login") // Cambia esta URL por la de tu servidor
             };
 
             // Agregamos los headers comunes
@@ -40,7 +40,7 @@ namespace practicaCys2
                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
                 // Realizar la petición POST
-                HttpResponseMessage response = await _httpClient.PostAsync("login", content);
+                HttpResponseMessage response = await _httpClient.PostAsync(BaseAddress, content);
 
                 // Verificar si la respuesta es exitosa
                 if (response.IsSuccessStatusCode)
