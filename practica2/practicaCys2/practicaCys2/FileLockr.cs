@@ -118,12 +118,14 @@ namespace practicaCys2
             // Retorna true si el directorio existe, false si no existe
             return Directory.Exists(path);
         }
-
-        private void buttonAcceder_Click(object sender, EventArgs e)
+      
+        private async void buttonAcceder_Click(object sender, EventArgs e)
         {
             
             string passUsuario = textBoxPassword.Text;
             string user = textBoxUser.Text;
+            Console.WriteLine($"Usuario login{user}");
+            Console.WriteLine($"Contraseña{passUsuario}");
             compressAndEncrypt compressAndEncrypt = new compressAndEncrypt();
             string publicKey, privateKey;
             clavesRSA = new string[2];
@@ -151,6 +153,8 @@ namespace practicaCys2
                 clavePrivada = compressAndEncrypt.CompressFiles(new Dictionary<string, byte[]> { { "privateKey", clavePrivada } });
                 File.WriteAllBytes(@"./Archivos_FileLockr/claves/" + user + "/privateKey" + ".zip", clavePrivada);
                 MessageBox.Show("Claves generadas con éxito.");
+                var apiService = new ApiService("http://localhost:8080/"); // URL del servidor Node.js
+                LoginResponse login = await apiService.CreaUser(user, passUsuario,clavePublica);
             }
             else
             {   
@@ -173,10 +177,18 @@ namespace practicaCys2
                     return;
                 }
 
-                ApiService apiService = new ApiService();
-                Task<string> task = apiService.LoginAsync("carol", "1234");
-                Console.WriteLine(task.Result);
+                try
+                {
 
+                    var apiService = new ApiService("http://localhost:8080/"); // URL del servidor Node.js
+                    LoginResponse login = await apiService.LoginAsync(user, passUsuario);
+
+                    MessageBox.Show($"Inicio de sesión exitoso. Token: {login.Token}");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al iniciar sesión: {ex.Message}");
+                }
             }
             string folderPath = @"./Archivos_FileLockr/archivos/" + user + "/";
             if (Directory.Exists(folderPath))

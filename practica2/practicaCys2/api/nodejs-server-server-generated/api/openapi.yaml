@@ -4,7 +4,7 @@ info:
   description: API para gestionar usuarios y archivos en un sistema de encriptación.
   version: 1.0.0
 servers:
-- url: http://localhost:8080/api
+- url: http://localhost:8080
   description: Servidor local
 paths:
   /auth/login:
@@ -26,6 +26,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_200'
+      x-swagger-router-controller: Login
+  /auth/register:
+    post:
+      tags:
+      - Login
+      summary: Registrar un nuevo usuario
+      operationId: authRegisterPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+        required: true
+      responses:
+        "201":
+          description: Usuario registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
       x-swagger-router-controller: Login
   /usuarios:
     get:
@@ -267,6 +287,7 @@ components:
           description: Contraseña del usuario
         publicKey:
           type: string
+          format: binary 
           description: Clave pública del usuario
       example:
         clave: clave

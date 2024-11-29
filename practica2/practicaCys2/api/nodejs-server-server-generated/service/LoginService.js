@@ -11,6 +11,7 @@ const jwt = require('jsonwebtoken');
 
 
 exports.authLoginPOST = function (body) {
+  console.log('Entra  al servicio de login');
   return new Promise(function (resolve, reject) {
     const { nombre, clave } = body;
 
@@ -43,12 +44,32 @@ exports.authLoginPOST = function (body) {
       );
 
       resolve({
-        message: 'Usuario logueado correctamente',
-        id: user.idUsuario,
-        token: token,
+        token: token
       });
     });
   });
 };
 
+
+exports.authRegisterPOST = function (body) {
+  return new Promise(function (resolve, reject) {
+    const { nombre, clave,publicKey } = body;
+
+    if (!nombre || !clave) {
+      return reject(new Error('Faltan datos: nombre y clave son obligatorios'));
+    }
+
+    const query = 'INSERT INTO usuarios (nombre, clave, publicKey) VALUES (?, ?,?)';
+
+    db.query(query, [nombre, clave,publicKey], function (error, results) {
+      if (error) {
+        return reject(error);
+      }
+
+      resolve({
+        message: 'Usuario registrado correctamente'
+      });
+    });
+  });
+};
 
