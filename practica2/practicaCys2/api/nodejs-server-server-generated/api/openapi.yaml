@@ -157,6 +157,32 @@ paths:
       security:
       - bearerAuth: []
       x-swagger-router-controller: Usuario
+  /usuario/{nombre}:
+    get:
+      tags:
+      - Usuario
+      summary: Obtener un usuario por nombre
+      operationId: getIdUsuario
+      parameters:
+      - name: nombre
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        "404":
+          description: Usuario no encontrado
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Usuario
   /ficheros:
     get:
       tags:
@@ -296,8 +322,7 @@ components:
         nombre: nombre
     Fichero:
       required:
-      - iv
-      - kfile
+      - claves
       - ruta
       - usuario
       type: object
@@ -319,10 +344,9 @@ components:
           description: Kfile del archivo cifrado
       example:
         idFichero: 0
-        kfile: kfile
         ruta: ruta
         usuario: 6
-        iv: iv
+        claves: ruta a las claves
     auth_login_body:
       required:
       - clave

@@ -4,12 +4,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Text.Json;
+using Microsoft.VisualBasic.ApplicationServices;
 
 public class ApiService
 {
     private readonly HttpClient _httpClient;
     private readonly string _baseAddress;
-
+    private string _authToken;
     // Constructor
     public ApiService(string baseAddress)
     {
@@ -59,7 +60,7 @@ public class ApiService
         {
             // Realizar la solicitud GET
             var response = await _httpClient.GetAsync($"{_baseAddress}/{endpoint}");
-
+            Console.WriteLine("Api Service, ruta:  " + $"{_baseAddress}/{endpoint}");
             // Verificar si la respuesta es exitosa
             response.EnsureSuccessStatusCode();
 
@@ -98,6 +99,98 @@ public class ApiService
         // Usar el método POST para enviar las credenciales
         return await PostAsync<object, LoginResponse>("auth/register", registerData);
     }
+
+    public async Task<List<User>> GetUsersAsync()
+    {
+        try
+        {
+            // Llamar al método GET para obtener la lista de usuarios
+            return await GetAsync<List<User>>("usuarios");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw new Exception($"Error al obtener la lista de usuarios: {ex.Message}");
+        }
+    }
+
+    public void SetAuthToken(string token)
+    {
+        _authToken = token;
+        _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+    }
+
+    public async Task<List<Fichero>> GetFicherosAsync()
+    {
+        try
+        {
+            // Llamar al método GET para obtener la lista de usuarios
+            return await GetAsync<List<Fichero>>("ficheros");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw new Exception($"Error al obtener la lista de ficheros: {ex.Message}");
+        }
+    }
+
+    public async Task<Fichero> GetFicheroAsync(int id)
+    {
+        try
+        {
+            // Llamar al método GET para obtener la lista de usuarios
+            return await GetAsync<Fichero>($"ficheros/{id}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw new Exception($"Error al obtener la lista de ficheros: {ex.Message}");
+        }
+    }
+
+    public async Task<Fichero> CreaFichero(string ruta, int usuario, string claves)
+    {
+        var registerData = new
+        {
+            ruta = ruta,
+            usuario = usuario,
+            claves=claves
+        };
+        return await PostAsync<object, Fichero>("ficheros", registerData);
+    }
+
+    public async Task<int> GetUserId(string username)
+    {
+        try
+        {
+            // Llamar al método GET para obtener la lista de usuarios
+            User usuario= await GetAsync<User>($"usuario/{username}");
+            return usuario.IdUsuario;
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw new Exception($"Error al obtener el usuario: {ex.Message}");
+        }
+    }
+
+    public async Task<List<Fichero>> getFicheros(int usuario)
+    {
+        try
+        {
+
+            List<Fichero> ficheros = await GetAsync<List<Fichero>>($"ficheros");
+            var ficherosFiltrados = ficheros.Where(f => f.usuario == usuario).ToList();
+
+            return ficherosFiltrados;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw new Exception($"Error al obtener la lista de ficheros: {ex.Message}");
+        }
+    }
 }
 
 
@@ -105,4 +198,25 @@ public class LoginResponse
 {
     public string Token { get; set; }
     
+}
+
+public class User
+{
+    public int IdUsuario { get; set; }
+    public string nombre { get; set; }
+    public PublicKey publicKey { get; set; }
+}
+
+
+public class PublicKey
+{
+    public string Type { get; set; }
+    public string Key { get; set; }
+}
+
+public class Fichero
+{
+    public string ruta { get; set; }
+    public int usuario { get; set; }
+    public string claves { get; set; }
 }

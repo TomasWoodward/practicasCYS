@@ -49,10 +49,29 @@ exports.usuariosIdUsuarioDELETE = function(idUsuario) {
  * returns Usuario
  **/
 exports.usuariosIdUsuarioGET = function(idUsuario) {
+  
+    return new Promise(function(resolve, reject) {
+      const query = 'SELECT * FROM usuarios WHERE idUsuario = ?';
+      
+      db.query(query, [idUsuario], (error, results) => {
+        if (error) {
+          reject(error);
+        } else if (results.length === 0) {
+          reject(error);
+        } else {
+          resolve(results[0]);
+        }
+      });
+    });
+  
+}
+
+
+exports.getIdUsuario = function(nombre) {
   return new Promise(function(resolve, reject) {
-    const query = 'SELECT * FROM usuarios WHERE idUsuario = ?';
+    const query = 'SELECT idUsuario FROM usuarios WHERE nombre = ?';
     
-    db.query(query, [idUsuario], (error, results) => {
+    db.query(query, [nombre], (error, results) => {
       if (error) {
         reject(error);
       } else if (results.length === 0) {
@@ -63,7 +82,6 @@ exports.usuariosIdUsuarioGET = function(idUsuario) {
     });
   });
 }
-
 
 /**
  * Actualizar un usuario

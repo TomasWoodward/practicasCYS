@@ -9,7 +9,7 @@ const db=require('../db.js');
  **/
 exports.ficherosGET = function() {
   return new Promise(function(resolve, reject) {
-    const query = 'SELECT * FROM ficheros';
+    const query = 'SELECT * FROM fichero';
     
     db.query(query, (error, results) => {
       if (error) {
@@ -30,7 +30,7 @@ exports.ficherosGET = function() {
  **/
 exports.ficherosIdFicheroDELETE = function(idFichero) {
   return new Promise(function(resolve, reject) {
-    const query = 'DELETE FROM ficheros WHERE idFichero = ?';
+    const query = 'DELETE FROM fichero WHERE idFichero = ?';
     
     db.query(query, [idFichero], (error, results) => {
       if (error) {
@@ -51,7 +51,7 @@ exports.ficherosIdFicheroDELETE = function(idFichero) {
  **/
 exports.ficherosIdFicheroGET = function(idFichero) {
   return new Promise(function(resolve, reject) {
-    const query = 'SELECT * FROM ficheros WHERE idFichero = ?';
+    const query = 'SELECT * FROM fichero WHERE idFichero = ?';
     
     db.query(query, [idFichero], (error, results) => {
       if (error) {
@@ -75,10 +75,10 @@ exports.ficherosIdFicheroGET = function(idFichero) {
  **/
 exports.ficherosIdFicheroPUT = function(body,idFichero) {
   return new Promise(function(resolve, reject) {
-    const { ruta, usuario, iv,kfile} = body;
-    const query = 'UPDATE fichero SET ruta = ?, usuario = ?,iv=?, kfile=? WHERE idFichero = ?';
+    const { ruta, usuario, claves} = body;
+    const query = 'UPDATE fichero SET ruta = ?, usuario = ?, claves=? WHERE idFichero = ?';
     
-    db.query(query, [ruta,usuario,iv,kfile, idFichero], (error, results) => {
+    db.query(query, [ruta,usuario,claves, idFichero], (error, results) => {
       if (error) {
         reject(error);
       } else {
@@ -97,14 +97,14 @@ exports.ficherosIdFicheroPUT = function(body,idFichero) {
  **/
 exports.ficherosPOST = function(body) {
   return new Promise(function(resolve, reject) {
-    const {ruta, usuario, iv,kfile} = body;
-    const query = 'INSERT INTO ficheros (ruta, usuario, iv,kfile) VALUES (?,?, ?, ?)';
+    const {ruta, usuario, claves} = body;
+    const query = 'INSERT INTO fichero (ruta, usuario,claves) VALUES (?,?, ?)';
     
-    db.query(query, [ruta, usuario, iv,kfile], (error, results) => {
+    db.query(query, [ruta, usuario, claves], (error, results) => {
       if (error) {
         reject(error);
       } else {
-        resolve({ message: 'Fichero creado correctamente', id: idFichero });
+        resolve({ message: 'Fichero creado correctamente', id: results.insertId });
       }
     });
   });
