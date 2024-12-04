@@ -112,12 +112,58 @@ namespace practicaCys2
 
         private bool checkUser(string user)
         {
-            // Combina la ruta base con el nombre del usuario
-            string path = Path.Combine("./Archivos_FileLockr/claves", user);
-
-            // Retorna true si el directorio existe, false si no existe
-            return Directory.Exists(path);
+            ApiService apiService = new ApiService();
+            return true;
         }
+
+        static byte[] GenerateSalt()
+        {
+            byte[] salt = new byte[16]; // Tamaño del salt (128 bits)
+            RandomNumberGenerator.Fill(salt);
+            return salt;
+        }
+
+        static byte[] GenerateHash(string password, byte[] salt)
+        {
+            using (var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000, HashAlgorithmName.SHA256))
+            {
+                return pbkdf2.GetBytes(32); // Tamaño del hash (256 bits)
+            }
+        }
+
+        static string ComputeSha256Hash(string input)
+        {
+            // Convertir el string en un arreglo de bytes
+            byte[] bytes = Encoding.UTF8.GetBytes(input);
+
+            // Crear instancia de SHA256
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                // Generar el hash
+                byte[] hashBytes = sha256.ComputeHash(bytes);
+
+                // Convertir el arreglo de bytes a un string hexadecimal
+                StringBuilder builder = new StringBuilder();
+                foreach (byte b in hashBytes)
+                {
+                    builder.Append(b.ToString("x2"));
+                }
+                return builder.ToString();
+            }
+        }
+        static (string, string) DividirPorMitad(string input)
+        {
+            // Calcular el punto medio
+            int longitud = input.Length;
+            int mitad = longitud / 2;
+
+            // Obtener las dos mitades
+            string primeraMitad = input.Substring(0, mitad);
+            string segundaMitad = input.Substring(mitad);
+
+            return (primeraMitad, segundaMitad);
+        }
+
 
         private void buttonAcceder_Click(object sender, EventArgs e)
         {
@@ -126,6 +172,17 @@ namespace practicaCys2
             string user = textBoxUser.Text;
             compressAndEncrypt compressAndEncrypt = new compressAndEncrypt();
             string publicKey, privateKey;
+
+            passUsuario = ComputeSha256Hash(passUsuario);
+
+            (string kdatos, string passLogin) = DividirPorMitad(passUsuario);
+
+            byte[] salt = GenerateSalt();
+            byte[] hash = GenerateHash(passLogin, salt);
+
+            passLogin = Convert.ToBase64String(hash);
+            string sal = Convert.ToBase64String(salt);
+
             clavesRSA = new string[2];
             if (passUsuario == "" || user == "")
             {
@@ -147,7 +204,7 @@ namespace practicaCys2
                 Directory.CreateDirectory(@"./Archivos_FileLockr/claves/" + user);
                 File.WriteAllBytes(@"./Archivos_FileLockr/claves/" + user + "/publicKey" + ".zip", clavePublica);
 
-                byte[] clavePrivada = compressAndEncrypt.EncryptPrivateKeyWithAes(clavesRSA[1], passUsuario);
+                byte[] clavePrivada = compressAndEncrypt.EncryptPrivateKeyWithAes(clavesRSA[1], kdatos);
                 clavePrivada = compressAndEncrypt.CompressFiles(new Dictionary<string, byte[]> { { "privateKey", clavePrivada } });
                 File.WriteAllBytes(@"./Archivos_FileLockr/claves/" + user + "/privateKey" + ".zip", clavePrivada);
                 MessageBox.Show("Claves generadas con éxito.");
@@ -159,7 +216,7 @@ namespace practicaCys2
                 Dictionary<string, byte[]> privateKeyDict = compressAndEncrypt.DecompressFiles(privateKeyBytes);
                 try
                 {
-                    clavesRSA[1] = compressAndEncrypt.DecryptPrivateKeyWithAes(privateKeyDict["privateKey"], passUsuario);
+                    clavesRSA[1] = compressAndEncrypt.DecryptPrivateKeyWithAes(privateKeyDict["privateKey"], kdatos);
                     panelListado.Visible = true;
                     panelAcceso.Visible = false;
                     panelCifrado.Visible = false;
