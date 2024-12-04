@@ -69,6 +69,7 @@ exports.usuariosIdUsuarioGET = function(idUsuario) {
 
 exports.getIdUsuario = function(nombre) {
   return new Promise(function(resolve, reject) {
+    console.log("Entra al servicio de usuario ", nombre);
     const query = 'SELECT idUsuario FROM usuarios WHERE nombre = ?';
     
     db.query(query, [nombre], (error, results) => {

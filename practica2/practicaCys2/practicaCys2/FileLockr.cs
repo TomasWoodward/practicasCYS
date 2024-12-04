@@ -108,14 +108,14 @@ namespace practicaCys2
             }
         }
 
-        private async Task<bool> checkUser(string user, string passLogin)
-        {
-            User usuario = await this.apiService.GetUser(user);
-            return CryptographicOperations.FixedTimeEquals(
-                                                            Convert.FromBase64String(usuario.clave), 
-                                                            Convert.FromBase64String(passLogin)
-                                                           );
-        }
+        //private async Task<bool> checkUser(string user, string passLogin)
+        //{
+        //    User usuario = await this.apiService.GetUser(user);
+        //    return CryptographicOperations.FixedTimeEquals(
+        //                                                    Convert.FromBase64String(usuario.clave), 
+        //                                                    Convert.FromBase64String(passLogin)
+        //                                                   );
+        //}
 
         static byte[] GenerateSalt()
         {
@@ -193,9 +193,10 @@ namespace practicaCys2
 
             if (login.Token != null){ //login ok
                 apiService.SetAuthToken(login.Token);
-                User usuario = await apiService.GetUser(user);
-                clavesRSA[0] = Convert.ToBase64String(usuario.publicKey);
-                clavesRSA[1] = Convert.ToBase64String(usuario.privateKey);
+                int id = await apiService.GetUserId(user);
+                User usuario = await apiService.GetUser(id);
+                clavesRSA[0] = usuario.publicKey.Key;
+                clavesRSA[1] = usuario.privateKey.Key;
             }
             else //registrar el usuario
             {
@@ -213,7 +214,7 @@ namespace practicaCys2
                 Console.WriteLine("pass Registro: " + passRegistro);
                 Console.WriteLine("pass LOGIN: " + passLogin);
                 Console.WriteLine("SALT: " + salRegistro);
-                LoginResponse registro = await apiService.CreaUser  (user, passRegistro, salRegistro, clavePublica, clavePrivada);
+                LoginResponse registro = await apiService.CreaUser  (user, passLogin, salRegistro, clavePublica, clavePrivada);
                 login = await apiService.LoginAsync(user, passLogin);
                 apiService.SetAuthToken(login.Token);
             }

@@ -60,12 +60,14 @@ public class ApiService
         {
             // Realizar la solicitud GET
             var response = await _httpClient.GetAsync($"{_baseAddress}/{endpoint}");
+            Console.WriteLine("get async: " + response);
             Console.WriteLine("Api Service, ruta:  " + $"{_baseAddress}/{endpoint}");
             // Verificar si la respuesta es exitosa
             response.EnsureSuccessStatusCode();
 
             // Leer y deserializar la respuesta
             var jsonResponse = await response.Content.ReadAsStringAsync();
+           
             return JsonConvert.DeserializeObject<TResponse>(jsonResponse);
         }
         catch (Exception ex)
@@ -166,8 +168,10 @@ public class ApiService
         try
         {
             // Llamar al método GET para obtener la lista de usuarios
-            User usuario= await GetAsync<User>($"usuario/{username}");
-            return usuario.IdUsuario;
+            Console.WriteLine("en get user id: " + username);
+            User usuario = await GetAsync<User>($"usuario/{username}");
+            
+            return usuario.idUsuario;
 
         }
         catch (Exception ex)
@@ -177,12 +181,11 @@ public class ApiService
         }
     }
 
-    public async Task<User> GetUser(string username)
+    public async Task<User> GetUser(int id)
     {
         try
         {
-            // Llamar al método GET para obtener la lista de usuarios
-            User usuario = await GetAsync<User>($"usuario/{username}");
+            User usuario = await GetAsync<User>($"usuarios/{id}");
             return usuario;
 
         }
@@ -219,19 +222,18 @@ public class LoginResponse
 
 public class User
 {
-    public int IdUsuario { get; set; }
+    public int idUsuario { get; set; }
     public string nombre { get; set; }
 
     public string clave { get; set; }
 
     public string salt { get; set; }
-    public byte[] publicKey { get; set; }
-
-    public byte[] privateKey { get; set; }
+    public Key1 publicKey { get; set; }
+    public Key1 privateKey { get; set; }
 }
 
 
-public class PublicKey
+public class Key1
 {
     public string Type { get; set; }
     public string Key { get; set; }

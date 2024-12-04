@@ -10,38 +10,42 @@ const crypto = require('crypto');
  **/
 
 async function hashPassword(password, salt) {
-  const encoder = new TextEncoder();
 
-  // Convierte la contraseña y el salt a formato Uint8Array
-  const passwordData = encoder.encode(password);
-  const saltData = encoder.encode(salt);
+    // Ejemplo: Crear un hashBuffer usando la API de Crypto
+    const encoder = new TextEncoder();
+    const password2 = encoder.encode(password);
+    const salt2 = encoder.encode(salt);
 
-  // Genera una clave criptográfica base a partir de la contraseña
-  const baseKey = await crypto.subtle.importKey(
-    "raw",               // Formato de la clave
-    passwordData,        // Datos de la clave (contraseña en este caso)
-    "PBKDF2",            // Algoritmo que se usará
-    false,               // No se podrá exportar esta clave
-    ["deriveBits", "deriveKey"] // Usos permitidos
+    const baseKey = await crypto.subtle.importKey(
+        "raw",
+        password2,
+        "PBKDF2",
+        false,
+        ["deriveBits"]
+    );
+
+    const hashBuffer = await crypto.subtle.deriveBits(
+        {
+            name: "PBKDF2",
+            salt: salt2,
+            iterations: 10000,
+            hash: "SHA-256"
+        },
+        baseKey,
+        256 // Longitud en bits
+    );
+
+    // Convierte el ArrayBuffer a Base64
+    const hashBase64 = toBase64(hashBuffer);
+    return hashBase64;
+}
+
+function toBase64(buffer) {
+  return btoa(
+      Array.from(new Uint8Array(buffer))
+          .map(byte => String.fromCharCode(byte))
+          .join("")
   );
-
-  // Deriva una clave usando PBKDF2 con SHA-256 y 10,000 iteraciones
-  const derivedKey = await crypto.subtle.deriveKey(
-    {
-      name: "PBKDF2",
-      salt: saltData,
-      iterations: 10000,
-      hash: "SHA-256"
-    },
-    baseKey,              // Clave base
-    { name: "HMAC", hash: "SHA-256", length: 256 }, // Formato de la clave derivada
-    true,                 // La clave derivada puede exportarse
-    ["sign"]              // Uso permitido de la clave derivada
-  );
-
-  // Exporta la clave derivada a un formato crudo para convertirla a hexadecimal
-  const hashBuffer = await crypto.subtle.exportKey("raw", derivedKey);
-  return btoa(String.fromCharCode(...new Uint8Array(hashBuffer))); // Devuelve el hash en Base64
 }
 
 function compareHashes(hash1, hash2) {
@@ -100,16 +104,16 @@ exports.authLoginPOST = function (body) {
 
 exports.authRegisterPOST = function (body) {
 
-  return new Promise(function (resolve, reject) {
+  return new Promise(async function (resolve, reject) {
     const { nombre, clave, salt, publicKey, privateKey } = body;
 
     if (!nombre || !clave) {
       return reject(new Error('Faltan datos: nombre y clave son obligatorios'));
     }
-
+    const hashedPassword = await hashPassword(clave, salt);
     const query = 'INSERT INTO usuarios (nombre, clave, salt, publicKey, privateKey) VALUES (?, ?, ?, ?, ?)';
 
-    db.query(query, [nombre, clave, salt, publicKey, privateKey], function (error, results) {
+    db.query(query, [nombre, hashedPassword, salt, publicKey, privateKey], function (error, results) {
       if (error) {
         return reject(error);
       }
