@@ -217,7 +217,7 @@ namespace practicaCys2
             textBoxPassword.TabIndex = 1;
             textBoxPassword.TextAlign = HorizontalAlignment.Center;
             textBoxPassword.UseSystemPasswordChar = true;
-            textBoxPassword.TextChanged += textBoxPassword_TextChanged;
+
             // 
             // pictureBox1
             // 

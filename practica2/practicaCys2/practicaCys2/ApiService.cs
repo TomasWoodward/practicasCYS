@@ -87,13 +87,15 @@ public class ApiService
         return await PostAsync<object, LoginResponse>("auth/login", loginData);
     }
 
-    public async Task<LoginResponse> CreaUser(string username, string password,byte[] publicKey)
+    public async Task<LoginResponse> CreaUser(string username, string password, string salt,byte[] publicKey, byte[] privateKey)
     {
         var registerData = new
         {
             nombre = username,
             clave = password,
-            publicKey = publicKey
+            salt = salt,
+            publicKey = publicKey,
+            privateKey = privateKey
         };
 
         // Usar el método POST para enviar las credenciales
@@ -186,8 +188,7 @@ public class ApiService
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
-            throw new Exception($"Error al obtener el usuario: {ex.Message}");
+            return null;
         }
     }
 
@@ -222,7 +223,11 @@ public class User
     public string nombre { get; set; }
 
     public string clave { get; set; }
-    public PublicKey publicKey { get; set; }
+
+    public string salt { get; set; }
+    public byte[] publicKey { get; set; }
+
+    public byte[] privateKey { get; set; }
 }
 
 

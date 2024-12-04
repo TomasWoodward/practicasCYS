@@ -166,27 +166,16 @@ namespace practicaCys2
         }
 
 
-        private void buttonAcceder_Click(object sender, EventArgs e)
+        private async void buttonAcceder_Click(object sender, EventArgs e)
         {
-
-            string passUsuario = textBoxPassword.Text;
-            string user = textBoxUser.Text;
-            Console.WriteLine($"Usuario login{user}");
-            Console.WriteLine($"Contraseña{passUsuario}");
             compressAndEncrypt compressAndEncrypt = new compressAndEncrypt();
             string publicKey, privateKey;
 
-            passUsuario = ComputeSha256Hash(passUsuario);
-
-            (string kdatos, string passLogin) = DividirPorMitad(passUsuario);
-
-            byte[] salt = GenerateSalt();
-            byte[] hash = GenerateHash(passLogin, salt);
-
-            passLogin = Convert.ToBase64String(hash);
-            string sal = Convert.ToBase64String(salt);
-
             clavesRSA = new string[2];
+
+            string passUsuario = textBoxPassword.Text;
+            string user = textBoxUser.Text;
+
             if (passUsuario == "" || user == "")
             {
                 MessageBox.Show("Complete los campos de inicio de sesión.");
@@ -195,54 +184,42 @@ namespace practicaCys2
                 panelCifrado.Visible = false;
                 return;
             }
-            bool check = checkUser(user, passLogin).Result;
-            if (!check)
+
+            passUsuario = ComputeSha256Hash(passUsuario);
+            (string kdatos, string passLogin) = DividirPorMitad(passUsuario);
+            passLogin = Convert.ToBase64String(Encoding.UTF8.GetBytes(passLogin));
+
+            LoginResponse login = await apiService.LoginAsync(user, passLogin);
+
+            if (login.Token != null){ //login ok
+                apiService.SetAuthToken(login.Token);
+                User usuario = await apiService.GetUser(user);
+                clavesRSA[0] = Convert.ToBase64String(usuario.publicKey);
+                clavesRSA[1] = Convert.ToBase64String(usuario.privateKey);
+            }
+            else //registrar el usuario
             {
-                /*Generar clave publica y privada*/
                 compressAndEncrypt.GenerateRsaKeys(out publicKey, out privateKey);
                 clavesRSA = new string[2] { publicKey, privateKey };
 
                 byte[] clavePublica = Encoding.UTF8.GetBytes(publicKey);
-                clavePublica = compressAndEncrypt.CompressFiles(new Dictionary<string, byte[]> { { "publicKey", clavePublica } });
-
-                Directory.CreateDirectory(@"../../../../../claves/" + user);
-                File.WriteAllBytes(@"../../../../../claves/" + user + "/publicKey" + ".zip", clavePublica);
-                string relativePath = Path.Combine("..", "claves", user, "publicKey.zip");
-
                 byte[] clavePrivada = compressAndEncrypt.EncryptPrivateKeyWithAes(clavesRSA[1], kdatos);
-                clavePrivada = compressAndEncrypt.CompressFiles(new Dictionary<string, byte[]> { { "privateKey", clavePrivada } });
-                File.WriteAllBytes(@"../../../../../claves/" + user + "/privateKey" + ".zip", clavePrivada);
-                MessageBox.Show("Claves generadas con éxito.");
 
-                if (login.Token == null)
-                {
-                    LoginResponse registro = await apiService.CreaUser(user, passUsuario, clavePublica);
+                byte[] saltRegistro = GenerateSalt();
+                byte[] hashRegistro = GenerateHash(passLogin, saltRegistro);
 
-                }
+                string salRegistro = Convert.ToBase64String(saltRegistro);
+                string passRegistro = Convert.ToBase64String(hashRegistro);
+                Console.WriteLine("pass Registro: " + passRegistro);
+                Console.WriteLine("pass LOGIN: " + passLogin);
+                Console.WriteLine("SALT: " + salRegistro);
+                LoginResponse registro = await apiService.CreaUser  (user, passRegistro, salRegistro, clavePublica, clavePrivada);
+                login = await apiService.LoginAsync(user, passLogin);
+                apiService.SetAuthToken(login.Token);
             }
-            else
-            {
-                clavesRSA[0] = Encoding.UTF8.GetString(compressAndEncrypt.DecompressFiles(File.ReadAllBytes(@"../../../../../claves/" + user + "/publicKey.zip"))["publicKey"]);
-                byte[] privateKeyBytes = File.ReadAllBytes(@"../../../../../claves/" + user + "/privateKey.zip");
-                Dictionary<string, byte[]> privateKeyDict = compressAndEncrypt.DecompressFiles(privateKeyBytes);
-                try
-                {
-                    clavesRSA[1] = compressAndEncrypt.DecryptPrivateKeyWithAes(privateKeyDict["privateKey"], kdatos);
-                    panelListado.Visible = true;
-                    panelAcceso.Visible = false;
-                    panelCifrado.Visible = false;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Contraseña incorrecta.");
-                    panelListado.Visible = false;
-                    panelAcceso.Visible = true;
-                    panelCifrado.Visible = false;
-                    return;
-                }
-
-
-            }
+            panelListado.Visible = true;
+            panelAcceso.Visible = false;
+            panelCifrado.Visible = false;
 
             listarArchivos();
 
@@ -280,17 +257,6 @@ namespace practicaCys2
             }
         }
 
-        private void textBoxPassword_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panelListado_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        // Evento cuando el usuario hace clic en el botón "Confirmar"
         private async void buttonConfirmar_Click(object sender, EventArgs e)
         {
             if (listaExaminados.Items.Count > 0)
@@ -418,7 +384,6 @@ namespace practicaCys2
 
         private async void compartir(object sender, EventArgs e)
         {
-           
            
         }
     }

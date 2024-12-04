@@ -319,9 +319,11 @@ components:
   schemas:
     Usuario:
       required:
-      - clave
       - nombre
+      - clave
+      - salt
       - publicKey
+      - privateKey
       type: object
       properties:
         idUsuario:
@@ -333,15 +335,25 @@ components:
         clave:
           type: string
           description: Contraseña del usuario
+        salt:
+          type: string
+          description: Sal para la contraseña
         publicKey:
           type: string
           description: Clave pública del usuario
           format: binary
+        privateKey:
+          type: string
+          description: Clave privada del usuario
+          format: binary
       example:
-        clave: clave
         idUsuario: 0
-        publicKey: publicKey
         nombre: nombre
+        clave: clave
+        salt: salt
+        publicKey: publicKey
+        privateKey: privateKey
+
     Fichero:
       required:
       - archivo
