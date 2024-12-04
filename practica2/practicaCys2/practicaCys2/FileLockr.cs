@@ -108,10 +108,13 @@ namespace practicaCys2
             }
         }
 
-        private bool checkUser(string user)
+        private async Task<bool> checkUser(string user, string passLogin)
         {
-            ApiService apiService = new ApiService();
-            return true;
+            User usuario = await this.apiService.GetUser(user);
+            return CryptographicOperations.FixedTimeEquals(
+                                                            Convert.FromBase64String(usuario.clave), 
+                                                            Convert.FromBase64String(passLogin)
+                                                           );
         }
 
         static byte[] GenerateSalt()
@@ -192,8 +195,8 @@ namespace practicaCys2
                 panelCifrado.Visible = false;
                 return;
             }
-
-            if (!checkUser(user))
+            bool check = checkUser(user, passLogin).Result;
+            if (!check)
             {
                 /*Generar clave publica y privada*/
                 compressAndEncrypt.GenerateRsaKeys(out publicKey, out privateKey);
@@ -210,6 +213,7 @@ namespace practicaCys2
                 clavePrivada = compressAndEncrypt.CompressFiles(new Dictionary<string, byte[]> { { "privateKey", clavePrivada } });
                 File.WriteAllBytes(@"../../../../../claves/" + user + "/privateKey" + ".zip", clavePrivada);
                 MessageBox.Show("Claves generadas con éxito.");
+
                 if (login.Token == null)
                 {
                     LoginResponse registro = await apiService.CreaUser(user, passUsuario, clavePublica);

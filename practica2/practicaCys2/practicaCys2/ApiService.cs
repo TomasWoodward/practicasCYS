@@ -175,6 +175,22 @@ public class ApiService
         }
     }
 
+    public async Task<User> GetUser(string username)
+    {
+        try
+        {
+            // Llamar al método GET para obtener la lista de usuarios
+            User usuario = await GetAsync<User>($"usuario/{username}");
+            return usuario;
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw new Exception($"Error al obtener el usuario: {ex.Message}");
+        }
+    }
+
     public async Task<List<Fichero>> getFicheros(int usuario)
     {
         try
@@ -204,6 +220,8 @@ public class User
 {
     public int IdUsuario { get; set; }
     public string nombre { get; set; }
+
+    public string clave { get; set; }
     public PublicKey publicKey { get; set; }
 }
 
