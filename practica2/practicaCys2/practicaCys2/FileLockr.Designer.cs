@@ -63,6 +63,7 @@ namespace practicaCys2
             buttonCifrar = new Button();
             listaArchivos = new ListBox();
             panelUsuarios = new Panel();
+            button2 = new Button();
             label15 = new Label();
             btnCompartir = new Button();
             panel4 = new Panel();
@@ -70,7 +71,6 @@ namespace practicaCys2
             label13 = new Label();
             label14 = new Label();
             listUsuarios = new ListBox();
-            button2 = new Button();
             panelAcceso.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
@@ -430,6 +430,7 @@ namespace practicaCys2
             // button1
             // 
             button1.BackColor = SystemColors.ButtonHighlight;
+            button1.FlatAppearance.BorderSize = 0;
             button1.FlatStyle = FlatStyle.Flat;
             button1.Font = new Font("Tahoma", 10.2F);
             button1.Location = new Point(153, 88);
@@ -444,6 +445,7 @@ namespace practicaCys2
             // buttonCompartir
             // 
             buttonCompartir.BackColor = SystemColors.ButtonHighlight;
+            buttonCompartir.FlatAppearance.BorderSize = 0;
             buttonCompartir.FlatStyle = FlatStyle.Flat;
             buttonCompartir.Font = new Font("Tahoma", 10.2F);
             buttonCompartir.Location = new Point(36, 88);
@@ -573,6 +575,22 @@ namespace practicaCys2
             panelUsuarios.Size = new Size(934, 533);
             panelUsuarios.TabIndex = 8;
             // 
+            // button2
+            // 
+            button2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            button2.Cursor = Cursors.Hand;
+            button2.FlatAppearance.BorderColor = Color.White;
+            button2.FlatAppearance.BorderSize = 2;
+            button2.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 255, 128);
+            button2.Font = new Font("Wingdings 3", 9F, FontStyle.Regular, GraphicsUnit.Point, 2);
+            button2.Image = (Image)resources.GetObject("button2.Image");
+            button2.Location = new Point(36, 436);
+            button2.Name = "button2";
+            button2.Size = new Size(42, 40);
+            button2.TabIndex = 9;
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button_back_Click;
+            // 
             // label15
             // 
             label15.AutoSize = true;
@@ -664,22 +682,6 @@ namespace practicaCys2
             listUsuarios.Size = new Size(864, 308);
             listUsuarios.TabIndex = 5;
             // 
-            // button2
-            // 
-            button2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            button2.Cursor = Cursors.Hand;
-            button2.FlatAppearance.BorderColor = Color.White;
-            button2.FlatAppearance.BorderSize = 2;
-            button2.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 255, 128);
-            button2.Font = new Font("Wingdings 3", 9F, FontStyle.Regular, GraphicsUnit.Point, 2);
-            button2.Image = (Image)resources.GetObject("button2.Image");
-            button2.Location = new Point(36, 436);
-            button2.Name = "button2";
-            button2.Size = new Size(42, 40);
-            button2.TabIndex = 9;
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button_back_Click;
-            // 
             // FileLockr
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -687,10 +689,10 @@ namespace practicaCys2
             AutoSize = true;
             BackColor = SystemColors.ButtonHighlight;
             ClientSize = new Size(934, 533);
-            Controls.Add(panelUsuarios);
             Controls.Add(panelListado);
             Controls.Add(panelCifrado);
             Controls.Add(panelAcceso);
+            Controls.Add(panelUsuarios);
             Margin = new Padding(3, 4, 3, 4);
             MinimumSize = new Size(950, 572);
             Name = "FileLockr";
