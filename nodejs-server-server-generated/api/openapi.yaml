@@ -1,0 +1,372 @@
+openapi: 3.0.3
+info:
+  title: API para Aplicación de Encriptado de Archivos
+  description: API para gestionar usuarios y archivos en un sistema de encriptación.
+  version: 1.0.0
+servers:
+- url: http://localhost:8080
+  description: Servidor local
+paths:
+  /auth/login:
+    post:
+      tags:
+      - Login
+      summary: Iniciar sesión para obtener un token JWT
+      operationId: authLoginPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/auth_login_body'
+        required: true
+      responses:
+        "200":
+          description: Token generado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+      x-swagger-router-controller: Login
+  /auth/register:
+    post:
+      tags:
+      - Login
+      summary: Registrar un nuevo usuario
+      operationId: authRegisterPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+        required: true
+      responses:
+        "201":
+          description: Usuario registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+      x-swagger-router-controller: Login
+  /usuarios:
+    get:
+      tags:
+      - Usuario
+      summary: Obtener todos los usuarios
+      operationId: usuariosGET
+      responses:
+        "200":
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuario'
+                x-content-type: application/json
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Usuario
+    post:
+      tags:
+      - Usuario
+      summary: Crear un nuevo usuario
+      operationId: usuariosPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+        required: true
+      responses:
+        "201":
+          description: Usuario creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Usuario
+  /usuarios/{idUsuario}:
+    get:
+      tags:
+      - Usuario
+      summary: Obtener un usuario por ID
+      operationId: usuariosIdUsuarioGET
+      parameters:
+      - name: idUsuario
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        "404":
+          description: Usuario no encontrado
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Usuario
+    put:
+      tags:
+      - Usuario
+      summary: Actualizar un usuario
+      operationId: usuariosIdUsuarioPUT
+      parameters:
+      - name: idUsuario
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+        required: true
+      responses:
+        "200":
+          description: Usuario actualizado
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Usuario
+    delete:
+      tags:
+      - Usuario
+      summary: Eliminar un usuario
+      operationId: usuariosIdUsuarioDELETE
+      parameters:
+      - name: idUsuario
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: Usuario eliminado
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Usuario
+  /usuario/{nombre}:
+    get:
+      tags:
+      - Usuario
+      summary: Obtener un usuario por nombre
+      operationId: getIdUsuario
+      parameters:
+      - name: nombre
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        "404":
+          description: Usuario no encontrado
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Usuario
+  /ficheros:
+    get:
+      tags:
+      - Fichero
+      summary: Obtener todos los ficheros
+      operationId: ficherosGET
+      responses:
+        "200":
+          description: Lista de ficheros
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Fichero'
+                x-content-type: application/json
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Fichero
+    post:
+      tags:
+      - Fichero
+      summary: Crear un nuevo fichero
+      operationId: ficherosPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Fichero'
+        required: true
+      responses:
+        "201":
+          description: Fichero creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fichero'
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Fichero
+  /ficheros/{idFichero}:
+    get:
+      tags:
+      - Fichero
+      summary: Obtener un fichero por ID
+      operationId: ficherosIdFicheroGET
+      parameters:
+      - name: idFichero
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Fichero encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fichero'
+        "404":
+          description: Fichero no encontrado
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Fichero
+    put:
+      tags:
+      - Fichero
+      summary: Actualizar un fichero
+      operationId: ficherosIdFicheroPUT
+      parameters:
+      - name: idFichero
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Fichero'
+        required: true
+      responses:
+        "200":
+          description: Fichero actualizado
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Fichero
+    delete:
+      tags:
+      - Fichero
+      summary: Eliminar un fichero
+      operationId: ficherosIdFicheroDELETE
+      parameters:
+      - name: idFichero
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: Fichero eliminado
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Fichero
+components:
+  schemas:
+    Usuario:
+      required:
+      - clave
+      - nombre
+      - publicKey
+      type: object
+      properties:
+        idUsuario:
+          type: integer
+          description: ID único del usuario
+        nombre:
+          type: string
+          description: Nombre del usuario
+        clave:
+          type: string
+          description: Contraseña del usuario
+        publicKey:
+          type: string
+          format: binary 
+          description: Clave pública del usuario
+      example:
+        clave: clave
+        idUsuario: 0
+        publicKey: publicKey
+        nombre: nombre
+    Fichero:
+      required:
+      - claves
+      - ruta
+      - usuario
+      type: object
+      properties:
+        idFichero:
+          type: integer
+          description: ID único del fichero
+        ruta:
+          type: string
+          description: Ruta del fichero
+        usuario:
+          type: integer
+          description: ID del usuario propietario del fichero
+        iv:
+          type: string
+          description: IV del archivo cifrado
+        kfile:
+          type: string
+          description: Kfile del archivo cifrado
+      example:
+        idFichero: 0
+        ruta: ruta
+        usuario: 6
+        claves: ruta a las claves
+    auth_login_body:
+      required:
+      - clave
+      - nombre
+      type: object
+      properties:
+        nombre:
+          type: string
+        clave:
+          type: string
+    inline_response_200:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Token JWT para autenticar solicitudes
+      example:
+        token: token
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
