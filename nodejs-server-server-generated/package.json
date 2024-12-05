@@ -18,6 +18,7 @@
     "js-yaml": "^3.3.0",
     "jsonwebtoken": "^9.0.2",
     "mysql": "^2.18.1",
+    "nodemon": "^3.1.7",
     "oas3-tools": "^2.2.3"
   }
 }

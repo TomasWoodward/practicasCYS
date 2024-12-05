@@ -377,9 +377,11 @@ namespace practicaCys2
             Console.WriteLine("Usuarios obtenidos");
             foreach (var item in usuarios)
             {
-                if(item.nombre != textBoxUser.Text)
-                    listUsuarios.Items.Add(item.nombre);
+                listUsuarios.Items.Add(item.nombre);
+                if (item.nombre == textBoxUser.Text)
+                    listUsuarios.SelectedItem = item.nombre;
                 Console.WriteLine(item.nombre);
+                
             }
         }
 
