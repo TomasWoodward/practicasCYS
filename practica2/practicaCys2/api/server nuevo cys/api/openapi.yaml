@@ -312,6 +312,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Compartir'
+  /compartir/{usuario}:
+    get:
+      tags:
+      - Compartir
+      summary: Obtener ficheros de un usuario
+      operationId: getFicherosByUser
+      parameters:
+        - name: usuario
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+      responses:
+        "201":
+          description: Ficheros obtenidos correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fichero'
       security:
       - bearerAuth: []
       x-swagger-router-controller: Compartir
@@ -353,12 +374,10 @@ components:
         salt: salt
         publicKey: publicKey
         privateKey: privateKey
-
     Fichero:
       required:
       - archivo
-      - idFichero
-      - iv
+      - nombre
       type: object
       properties:
         idFichero:
@@ -368,14 +387,13 @@ components:
           type: string
           description: Datos del fichero
           format: binary
-        iv:
+        nombre:
           type: string
-          description: IV del archivo cifrado
+          description: nombre del fichero
       example:
         idFichero: 0
-        ruta: ruta
-        usuario: 6
-        claves: ruta a las claves
+        archivo: archivo
+        nombre: nombre
     auth_login_body:
       required:
       - clave
@@ -399,6 +417,7 @@ components:
       - archivo
       - kfile
       - usuario
+      - iv
       type: object
       properties:
         archivo:
@@ -410,10 +429,14 @@ components:
         kfile:
           type: string
           description: Kfile del archivo cifrado
+        iv:
+          type: string
+          description: IV del archivo cifrado
       example:
         archivo: 0
         usuario: 6
         kfile: kfile
+        iv: iv
   securitySchemes:
     bearerAuth:
       type: http

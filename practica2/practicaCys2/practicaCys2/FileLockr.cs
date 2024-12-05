@@ -26,7 +26,6 @@ namespace practicaCys2
             panelListado.Visible = false;
             panelAcceso.Visible = true;
             panelCifrado.Visible = false;
-            panelUsuarios.Visible = false;
 
             string path1 = (@"../../../../../archivos");
             string path2 = (@"../../../../../archivos_descomprimidos");
@@ -362,38 +361,32 @@ namespace practicaCys2
                 RandomNumberGenerator.Fill(iv); // Generar 16 bytes aleatorios para el IV
 
                 // Crear el diccionario que contendrá la clave (Kfile) y el IV
-                Dictionary<string, byte[]> claves = new Dictionary<string, byte[]>()
-                {
-                    { "Kfile", key },
-                    { "IV", iv }
-                };
+                
 
-                // Crear un nombre único basado en la fecha y hora actual
-                Directory.CreateDirectory(@"../../../../../claves/" + user);
                 string uniqueFileName = nombreArchivo + $"_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}";
-                string keysFilePath = Path.Combine(@"../../../../../claves/" + user + "/", $"{uniqueFileName}_keys.zip");
 
-                // Comprimir y cifrar los archivos seleccionados
                 byte[] encryptedZip = compressAndEncrypt.CompressAndEncryptFiles(files, key, iv);
 
-                // Guardar el archivo ZIP cifrado en una ubicación deseada con el mismo nombre único
-                Directory.CreateDirectory(@"../../../../../archivos/" + user);
-                string encryptedFilePath = Path.Combine(@"../../../../../archivos/" + user + "/", $"{uniqueFileName}_encrypted.zip");
-                File.WriteAllBytes(encryptedFilePath, encryptedZip);
 
-                MessageBox.Show($"Archivos comprimidos y cifrados con éxito.\nGuardado en: {encryptedFilePath}\nClaves guardadas en: {keysFilePath}");
 
+                FicheroResponse fichero = await apiService.CreaFichero(uniqueFileName,encryptedZip);
+                int idFichero = fichero.Id;
+                MessageBox.Show($"Archivos comprimidos y cifrados con éxito.");
+
+                foreach (User usuario in usuariosCompartir)
+                {
+                    Console.WriteLine("entra al for each: "+usuario.nombre + usuario.publicKey.Key);
+                    byte[] kfile = compressAndEncrypt.EncryptAesKeyWithRsa(key, usuario.publicKey.Key);
+                    byte[] ivUser = compressAndEncrypt.EncryptAesKeyWithRsa(iv, usuario.publicKey.Key);
+                    string kfile2 = Encoding.UTF8.GetString(kfile);
+                    string ivString = Encoding.UTF8.GetString(ivUser);
+                    int idUsuario = await apiService.GetUserId(user);
+
+                    apiService.CompartirFichero(idFichero, idUsuario, kfile2, ivString);
+                }
                 // Comprimir y encriptar las claves
-                claves["Kfile"] = compressAndEncrypt.EncryptAesKeyWithRsa(claves["Kfile"], clavesRSA[0]);
-                claves["IV"] = compressAndEncrypt.EncryptAesKeyWithRsa(claves["IV"], clavesRSA[0]);
-                byte[] compressedKeys = compressAndEncrypt.CompressFiles(claves);
-                string kfile = Encoding.UTF8.GetString(claves["Kfile"]);
-                string ivString = Encoding.UTF8.GetString(claves["IV"]);
-                // Guardar el archivo comprimido (ZIP) en el sistema de archivos con el nombre único
-
-                File.WriteAllBytes(keysFilePath, compressedKeys);
-                int idUsuario = await apiService.GetUserId(user);
-                apiService.CreaFichero(encryptedFilePath, idUsuario, keysFilePath);
+                
+               
 
                 // Limpiar el ListBox después de confirmar
                 listaArchivos.Items.Clear();
@@ -416,7 +409,6 @@ namespace practicaCys2
             panelListado.Visible = true;
             panelAcceso.Visible = false;
             panelCifrado.Visible = false;
-            panelUsuarios.Visible = false;
             listarArchivos();
         }
         private async void listarArchivos()
@@ -425,15 +417,20 @@ namespace practicaCys2
             string user = textBoxUser.Text;
             int idUser = await apiService.GetUserId(user);
             List<Fichero> fnuevos = await apiService.getFicheros(idUser);
-            string folderPath = @"../../../../../archivos/" + user + "/";
-            foreach (Fichero item in fnuevos)
+            if (fnuevos == null)
             {
-                var ruta = item.ruta;
-                ruta.Replace("../../../../../archivos/" + user + "/", "");
-
-                ruta.Replace("_encrypted.zip", "");
+                MessageBox.Show("No se encontraron archivos para este usuario.");
             }
-            listaArchivos.Items.AddRange(fnuevos.Select(file => Path.GetFileName(file.ruta).Substring(0, Path.GetFileName(file.ruta).Length - "_encrypted.zip".Length)).ToArray());
+            else
+            {
+                foreach (Fichero archivo in fnuevos)
+                {
+                    listaArchivos.Items.Add(archivo.nombre);
+                }
+
+            }
+
+
         }
 
 

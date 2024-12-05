@@ -75,10 +75,10 @@ exports.ficherosIdFicheroGET = function(idFichero) {
  **/
 exports.ficherosIdFicheroPUT = function(body,idFichero) {
   return new Promise(function(resolve, reject) {
-    const {archivo,iv} = body;
-    const query = 'UPDATE fichero SET archivo = ?, iv = ? WHERE idFichero = ?';
+    const {nombre,archivo} = body;
+    const query = 'UPDATE fichero SET nombre=?,archivo = ? WHERE idFichero = ?';
     
-    db.query(query, [archivo,iv, idFichero], (error, results) => {
+    db.query(query, [nombre, archivo, idFichero], (error, results) => {
       if (error) {
         reject(error);
       } else {
@@ -96,11 +96,15 @@ exports.ficherosIdFicheroPUT = function(body,idFichero) {
  * returns Fichero
  **/
 exports.ficherosPOST = function(body) {
+  console.log("body: ",body);
   return new Promise(function(resolve, reject) {
-    const {archivo,iv} = body;
-    const query = 'INSERT INTO fichero (archivo,iv) VALUES (?,?)';
+    const {nombre,archivo} = body;
+    console.log("nombre: ",nombre);
+    console.log("archivo: ",archivo);
+
+    const query = 'INSERT INTO fichero (nombre, archivo) VALUES (?,?)';
     
-    db.query(query, [archivo,iv], (error, results) => {
+    db.query(query, [nombre,archivo], (error, results) => {
       if (error) {
         reject(error);
       } else {

@@ -12,3 +12,14 @@ module.exports.compartir = function compartir (req, res, next, body) {
       utils.writeJson(res, response);
     });
 };
+
+module.exports.getFicherosByUser = function getFicherosByUser (req, res, next, usuario) {
+  Compartir.getFicherosByUser(usuario)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      console.log("error en getFicherosByUser");
+      utils.writeJson(res, response);
+    });
+};

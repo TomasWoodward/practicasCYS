@@ -210,7 +210,7 @@ namespace practicaCys2
         // Metodo para cifrar la clave AES con la clave p�blica RSA
         public byte[] EncryptAesKeyWithRsa(byte[] aesKey, string publicKey)
         {
-            Console.WriteLine("aes key: "+aesKey);
+            Console.WriteLine("aes key: "+aesKey.ToString());
             Console.WriteLine("public key: "+publicKey);
             byte[] encryptedKey;
 

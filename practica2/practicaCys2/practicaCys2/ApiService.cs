@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Text.Json;
 using Microsoft.VisualBasic.ApplicationServices;
+using Newtonsoft.Json.Linq;
 
 public class ApiService
 {
@@ -29,7 +30,8 @@ public class ApiService
 
             // Realizar la solicitud POST
             var response = await _httpClient.PostAsync($"{_baseAddress}/{endpoint}", content);
-
+            Console.WriteLine($"{_baseAddress}/{endpoint}   " + jsonContent);
+            Console.WriteLine(response);
             // Verificar si la respuesta es exitosa
             response.EnsureSuccessStatusCode();
 
@@ -57,14 +59,52 @@ public class ApiService
         {
             // Realizar la solicitud GET
             var response = await _httpClient.GetAsync($"{_baseAddress}/{endpoint}");
-  
+
             // Verificar si la respuesta es exitosa
             response.EnsureSuccessStatusCode();
 
             // Leer y deserializar la respuesta
             var jsonResponse = await response.Content.ReadAsStringAsync();
+            Console.WriteLine("get async: " + jsonResponse);
            
-            return JsonConvert.DeserializeObject<TResponse>(jsonResponse);
+            if (typeof(TResponse) == typeof(User)){
+                
+                var userResponse = JsonConvert.DeserializeObject<User>(jsonResponse);
+
+                // Si publicKey o privateKey son buffers en formato JSON, asegúrate de convertirlos correctamente a una cadena
+                var userJson = JObject.Parse(jsonResponse);  // Usamos JObject para parsear el JSON
+                Console.WriteLine("ES ESTE: "+userJson["publicKey"]);
+                // Si existe una clave pública en el JSON, asignarla al objeto Key1
+                if (userJson["publicKey"] != null)
+                {
+                    var publicKey = userJson["publicKey"];
+                    var data = publicKey["data"];
+                    byte[] publicKeyValue = data.ToObject<byte[]>();
+                    userResponse.publicKey = new Key1
+                    {
+                        Type = "RSA", // Puedes cambiar esto si es necesario
+                        Key = Convert.ToBase64String(publicKeyValue) // Aquí aseguramos que la clave esté en Base64
+                    };
+                    Console.WriteLine("Clave pública en get async: " + userResponse.publicKey.Key);
+                }
+
+                // Si existe una clave privada en el JSON, asignarla al objeto Key1
+                if (userJson["privateKey"] != null)
+                {
+                    var privateKeyValue = userJson["privateKey"].ToString();
+                    userResponse.privateKey = new Key1
+                    {
+                        Type = "RSA", // Puedes cambiar esto si es necesario
+                        Key = Convert.ToBase64String(Convert.FromBase64String(privateKeyValue))  // Aquí aseguramos que la clave esté en Base64
+                    };
+                }
+                return (TResponse)(object)userResponse; // Hacer el cast a TResponse
+            }
+            else {
+                 var userResponse = JsonConvert.DeserializeObject<TResponse>(jsonResponse);
+                return (TResponse)(object)userResponse; // Hacer el cast a TResponse
+            }
+            
         }
         catch (Exception ex)
         {
@@ -157,15 +197,14 @@ public class ApiService
         }
     }
 
-    public async Task<Fichero> CreaFichero(string ruta, int usuario, string claves)
+    public async Task<FicheroResponse> CreaFichero(string nombre, byte[] archivo)
     {
         var registerData = new
         {
-            ruta = ruta,
-            usuario = usuario,
-            claves=claves
+            nombre = nombre,
+            archivo = archivo
         };
-        return await PostAsync<object, Fichero>("ficheros", registerData);
+        return await PostAsync<object, FicheroResponse>("ficheros", registerData);
     }
 
     public async Task<int> GetUserId(string username)
@@ -189,6 +228,7 @@ public class ApiService
         try
         {
             User usuario = await GetAsync<User>($"usuarios/{id}");
+            Console.WriteLine("clave publica " + usuario.nombre);
             return usuario;
 
         }
@@ -197,16 +237,26 @@ public class ApiService
             return null;
         }
     }
+    public async void CompartirFichero(int id,int user,string kfile,string iv)
+    {
+        var registerData = new
+        {
+            idFichero = id,
+            usuario = user,
+            kfile = kfile,
+            iv = iv
 
+        };
+        await PostAsync<object,FicheroResponse>("compartir", registerData);
+    }
     public async Task<List<Fichero>> getFicheros(int usuario)
     {
         try
         {
 
-            List<Fichero> ficheros = await GetAsync<List<Fichero>>($"ficheros");
-            var ficherosFiltrados = ficheros.Where(f => f.usuario == usuario).ToList();
+            List<Fichero> ficheros = await GetAsync<List<Fichero>>($"compartir/{usuario}");
 
-            return ficherosFiltrados;
+            return ficheros;
         }
         catch (Exception ex)
         {
@@ -222,7 +272,11 @@ public class LoginResponse
     public string Message { get; set; } // Mensaje descriptivo ('Usuario no encontrado', 'Contraseña incorrecta')
     public string Token { get; set; } // Token si el login es exitoso
 }
-
+public class FicheroResponse
+{
+    public int Id { get; set; }
+    public string Message { get; set; }
+}
 public class User
 {
     public int idUsuario { get; set; }
@@ -244,7 +298,13 @@ public class Key1
 
 public class Fichero
 {
-    public string ruta { get; set; }
-    public int usuario { get; set; }
-    public string claves { get; set; }
+    public int idFichero { get; set; }
+    public string nombre { get; set; }
+    public byte[] archivo { get; set; }
+}
+
+public class Archivo
+{
+    public string type { get; set; }
+    public byte[] data { get; set; }
 }

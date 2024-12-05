@@ -59,6 +59,7 @@ exports.usuariosIdUsuarioGET = function(idUsuario) {
         } else if (results.length === 0) {
           reject(error);
         } else {
+          console.log("Usuario encontrado ", results[0].publicKey);
           resolve(results[0]);
         }
       });
@@ -70,7 +71,7 @@ exports.usuariosIdUsuarioGET = function(idUsuario) {
 exports.getIdUsuario = function(nombre) {
   return new Promise(function(resolve, reject) {
     console.log("Entra al servicio de usuario ", nombre);
-    const query = 'SELECT idUsuario FROM usuarios WHERE nombre = ?';
+    const query = 'SELECT * FROM usuarios WHERE nombre = ?';
     
     db.query(query, [nombre], (error, results) => {
       if (error) {
