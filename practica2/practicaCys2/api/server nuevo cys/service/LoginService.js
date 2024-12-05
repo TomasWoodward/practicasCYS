@@ -55,7 +55,7 @@ function compareHashes(hash1, hash2) {
 
 
 exports.authLoginPOST = function (body) {
-  console.log('Entra  al servicio de login');
+  console.log('Entra al servicio de login');
   return new Promise(function (resolve, reject) {
     const { nombre, clave } = body;
 
@@ -71,21 +71,21 @@ exports.authLoginPOST = function (body) {
       }
 
       if (results.length === 0) {
-        return reject(new Error('Usuario no encontrado'));
+        console.log('Usuario no encontrado');
+        return resolve({ status: 'error', message: 'Usuario no encontrado' });
       }
 
       const user = results[0];
-     
-        const password = clave;
-        const salt = user.salt;
+      const password = clave;
+      const salt = user.salt;
 
+      try {
         const hashedPassword = await hashPassword(password, salt);
-        console.log("Hash generado:", hashedPassword);
+        console.log('Hash generado en login:', hashedPassword);
 
         if (!compareHashes(hashedPassword, user.clave)) {
           console.log('Contraseña incorrecta');
-
-          return reject(new Error('Contraseña incorrecta'));
+          return resolve({ status: 'error', message: 'Contraseña incorrecta' });
         }
 
         const token = jwt.sign(
@@ -94,34 +94,72 @@ exports.authLoginPOST = function (body) {
           { expiresIn: '24h' }
         );
 
-        resolve({
-          token: token
-        });
+        resolve({ status: 'success', token: token });
+      } catch (err) {
+        return reject(err);
+      }
     });
   });
 };
 
-
 exports.authRegisterPOST = function (body) {
-
   return new Promise(async function (resolve, reject) {
     const { nombre, clave, salt, publicKey, privateKey } = body;
 
-    if (!nombre || !clave) {
-      return reject(new Error('Faltan datos: nombre y clave son obligatorios'));
-    }
-    const hashedPassword = await hashPassword(clave, salt);
-    const query = 'INSERT INTO usuarios (nombre, clave, salt, publicKey, privateKey) VALUES (?, ?, ?, ?, ?)';
-
-    db.query(query, [nombre, hashedPassword, salt, publicKey, privateKey], function (error, results) {
-      if (error) {
-        return reject(error);
-      }
-
-      resolve({
-        message: 'Usuario registrado correctamente'
+    // Verificar que los datos requeridos estén presentes
+    if (!nombre || !clave || !salt || !publicKey || !privateKey) {
+      return resolve({
+        status: "error",
+        message: "Faltan datos: nombre, clave, salt, publicKey y privateKey son obligatorios"
       });
-    });
+    }
+
+    try {
+      // Verificar si el usuario ya existe
+      const checkUserQuery = 'SELECT * FROM usuarios WHERE nombre = ?';
+      db.query(checkUserQuery, [nombre], async function (error, results) {
+        if (error) {
+          return resolve({
+            status: "error",
+            message: "Error al verificar el usuario existente",
+            error: error.message
+          });
+        }
+
+        if (results.length > 0) {
+          return resolve({
+            status: "error",
+            message: "El usuario ya existe"
+          });
+        }
+
+        // Crear el hash de la contraseña
+        const hashedPassword = await hashPassword(clave, salt);
+        console.log('Hash generado en registro:', hashedPassword);
+        // Insertar el nuevo usuario en la base de datos
+        const insertQuery = 'INSERT INTO usuarios (nombre, clave, salt, publicKey, privateKey) VALUES (?, ?, ?, ?, ?)';
+        db.query(insertQuery, [nombre, hashedPassword, salt, publicKey, privateKey], function (error, results) {
+          if (error) {
+            return resolve({
+              status: "error",
+              message: "Error al registrar el usuario",
+              error: error.message
+            });
+          }
+
+          resolve({
+            status: "success",
+            message: "Usuario registrado correctamente"
+          });
+        });
+      });
+    } catch (err) {
+      resolve({
+        status: "error",
+        message: "Ocurrió un error inesperado",
+        error: err.message
+      });
+    }
   });
 };
 

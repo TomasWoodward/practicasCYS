@@ -40,6 +40,7 @@ namespace practicaCys2
             pictureBox1 = new PictureBox();
             labelPassword = new Label();
             panelCifrado = new Panel();
+            listUsuarios = new ListBox();
             textBoxNombreArchivo = new TextBox();
             panel3 = new Panel();
             label10 = new Label();
@@ -53,7 +54,6 @@ namespace practicaCys2
             listaExaminados = new ListBox();
             panelListado = new Panel();
             button1 = new Button();
-            buttonCompartir = new Button();
             label11 = new Label();
             panel2 = new Panel();
             label7 = new Label();
@@ -70,7 +70,6 @@ namespace practicaCys2
             label12 = new Label();
             label13 = new Label();
             label14 = new Label();
-            listUsuarios = new ListBox();
             panelAcceso.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
@@ -217,7 +216,6 @@ namespace practicaCys2
             textBoxPassword.TabIndex = 1;
             textBoxPassword.TextAlign = HorizontalAlignment.Center;
             textBoxPassword.UseSystemPasswordChar = true;
-
             // 
             // pictureBox1
             // 
@@ -249,6 +247,7 @@ namespace practicaCys2
             // panelCifrado
             // 
             panelCifrado.BackColor = Color.FromArgb(5, 57, 91);
+            panelCifrado.Controls.Add(listUsuarios);
             panelCifrado.Controls.Add(textBoxNombreArchivo);
             panelCifrado.Controls.Add(panel3);
             panelCifrado.Controls.Add(button_back);
@@ -263,10 +262,28 @@ namespace practicaCys2
             panelCifrado.Size = new Size(934, 533);
             panelCifrado.TabIndex = 3;
             // 
+            // listUsuarios
+            // 
+            listUsuarios.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            listUsuarios.BackColor = Color.FromArgb(8, 79, 122);
+            listUsuarios.BorderStyle = BorderStyle.None;
+            listUsuarios.Font = new Font("Tahoma", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            listUsuarios.ForeColor = SystemColors.Window;
+            listUsuarios.FormattingEnabled = true;
+            listUsuarios.ItemHeight = 22;
+            listUsuarios.Location = new Point(52, 301);
+            listUsuarios.Margin = new Padding(0);
+            listUsuarios.Name = "listUsuarios";
+            listUsuarios.ScrollAlwaysVisible = true;
+            listUsuarios.SelectionMode = SelectionMode.MultiSimple;
+            listUsuarios.Size = new Size(826, 132);
+            listUsuarios.TabIndex = 8;
+            listUsuarios.SelectedIndexChanged += listUsuarios_SelectedIndexChanged;
+            // 
             // textBoxNombreArchivo
             // 
             textBoxNombreArchivo.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBoxNombreArchivo.Location = new Point(562, 140);
+            textBoxNombreArchivo.Location = new Point(562, 112);
             textBoxNombreArchivo.Name = "textBoxNombreArchivo";
             textBoxNombreArchivo.PlaceholderText = "Introduce un nombre de archivo";
             textBoxNombreArchivo.Size = new Size(316, 26);
@@ -354,7 +371,7 @@ namespace practicaCys2
             button_back.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 255, 128);
             button_back.Font = new Font("Wingdings 3", 9F, FontStyle.Regular, GraphicsUnit.Point, 2);
             button_back.Image = (Image)resources.GetObject("button_back.Image");
-            button_back.Location = new Point(52, 425);
+            button_back.Location = new Point(52, 444);
             button_back.Name = "button_back";
             button_back.Size = new Size(42, 40);
             button_back.TabIndex = 4;
@@ -369,7 +386,7 @@ namespace practicaCys2
             buttonConfirmar.FlatAppearance.MouseDownBackColor = SystemColors.ButtonHighlight;
             buttonConfirmar.FlatAppearance.MouseOverBackColor = Color.Gray;
             buttonConfirmar.FlatStyle = FlatStyle.Flat;
-            buttonConfirmar.Location = new Point(775, 425);
+            buttonConfirmar.Location = new Point(775, 444);
             buttonConfirmar.Margin = new Padding(3, 4, 3, 4);
             buttonConfirmar.Name = "buttonConfirmar";
             buttonConfirmar.Size = new Size(103, 36);
@@ -385,7 +402,7 @@ namespace practicaCys2
             buttonExaminar.FlatAppearance.MouseDownBackColor = SystemColors.ButtonHighlight;
             buttonExaminar.FlatAppearance.MouseOverBackColor = Color.Gray;
             buttonExaminar.FlatStyle = FlatStyle.Flat;
-            buttonExaminar.Location = new Point(52, 133);
+            buttonExaminar.Location = new Point(52, 105);
             buttonExaminar.Margin = new Padding(3, 4, 3, 4);
             buttonExaminar.Name = "buttonExaminar";
             buttonExaminar.Size = new Size(99, 36);
@@ -403,18 +420,17 @@ namespace practicaCys2
             listaExaminados.ForeColor = SystemColors.Window;
             listaExaminados.FormattingEnabled = true;
             listaExaminados.ItemHeight = 22;
-            listaExaminados.Location = new Point(52, 185);
+            listaExaminados.Location = new Point(52, 157);
             listaExaminados.Margin = new Padding(10);
             listaExaminados.Name = "listaExaminados";
             listaExaminados.ScrollAlwaysVisible = true;
-            listaExaminados.Size = new Size(826, 198);
+            listaExaminados.Size = new Size(826, 132);
             listaExaminados.TabIndex = 0;
             // 
             // panelListado
             // 
             panelListado.BackColor = Color.FromArgb(5, 57, 91);
             panelListado.Controls.Add(button1);
-            panelListado.Controls.Add(buttonCompartir);
             panelListado.Controls.Add(label11);
             panelListado.Controls.Add(panel2);
             panelListado.Controls.Add(buttonCifrar);
@@ -433,7 +449,7 @@ namespace practicaCys2
             button1.FlatAppearance.BorderSize = 0;
             button1.FlatStyle = FlatStyle.Flat;
             button1.Font = new Font("Tahoma", 10.2F);
-            button1.Location = new Point(153, 88);
+            button1.Location = new Point(36, 85);
             button1.Margin = new Padding(3, 4, 3, 4);
             button1.Name = "button1";
             button1.Size = new Size(100, 40);
@@ -441,21 +457,6 @@ namespace practicaCys2
             button1.Text = "Abrir";
             button1.UseVisualStyleBackColor = false;
             button1.Click += btn_Abrir_Click;
-            // 
-            // buttonCompartir
-            // 
-            buttonCompartir.BackColor = SystemColors.ButtonHighlight;
-            buttonCompartir.FlatAppearance.BorderSize = 0;
-            buttonCompartir.FlatStyle = FlatStyle.Flat;
-            buttonCompartir.Font = new Font("Tahoma", 10.2F);
-            buttonCompartir.Location = new Point(36, 88);
-            buttonCompartir.Margin = new Padding(3, 4, 3, 4);
-            buttonCompartir.Name = "buttonCompartir";
-            buttonCompartir.Size = new Size(100, 40);
-            buttonCompartir.TabIndex = 6;
-            buttonCompartir.Text = "Compartir";
-            buttonCompartir.UseVisualStyleBackColor = false;
-            buttonCompartir.Click += btn_Compartir;
             // 
             // label11
             // 
@@ -569,7 +570,6 @@ namespace practicaCys2
             panelUsuarios.Controls.Add(label15);
             panelUsuarios.Controls.Add(btnCompartir);
             panelUsuarios.Controls.Add(panel4);
-            panelUsuarios.Controls.Add(listUsuarios);
             panelUsuarios.Location = new Point(0, 0);
             panelUsuarios.Name = "panelUsuarios";
             panelUsuarios.Size = new Size(934, 533);
@@ -667,21 +667,6 @@ namespace practicaCys2
             label14.TabIndex = 0;
             label14.Text = "COMPARTIR";
             // 
-            // listUsuarios
-            // 
-            listUsuarios.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            listUsuarios.BackColor = Color.FromArgb(8, 79, 122);
-            listUsuarios.BorderStyle = BorderStyle.None;
-            listUsuarios.Font = new Font("Tahoma", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            listUsuarios.ForeColor = SystemColors.Window;
-            listUsuarios.FormattingEnabled = true;
-            listUsuarios.ItemHeight = 22;
-            listUsuarios.Location = new Point(36, 96);
-            listUsuarios.Margin = new Padding(0);
-            listUsuarios.Name = "listUsuarios";
-            listUsuarios.Size = new Size(864, 308);
-            listUsuarios.TabIndex = 5;
-            // 
             // FileLockr
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -689,10 +674,10 @@ namespace practicaCys2
             AutoSize = true;
             BackColor = SystemColors.ButtonHighlight;
             ClientSize = new Size(934, 533);
-            Controls.Add(panelListado);
             Controls.Add(panelCifrado);
             Controls.Add(panelAcceso);
             Controls.Add(panelUsuarios);
+            Controls.Add(panelListado);
             Margin = new Padding(3, 4, 3, 4);
             MinimumSize = new Size(950, 572);
             Name = "FileLockr";
@@ -756,7 +741,6 @@ namespace practicaCys2
         private Label label10;
         private TextBox textBoxNombreArchivo;
         private Label label11;
-        private Button buttonCompartir;
         private Button button1;
         private Panel panelUsuarios;
         private Button btnCompartir;
@@ -764,8 +748,8 @@ namespace practicaCys2
         private Label label12;
         private Label label13;
         private Label label14;
-        private ListBox listUsuarios;
         private Label label15;
         private Button button2;
+        private ListBox listUsuarios;
     }
 }

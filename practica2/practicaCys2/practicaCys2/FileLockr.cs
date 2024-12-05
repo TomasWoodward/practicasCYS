@@ -18,6 +18,7 @@ namespace practicaCys2
     {
         private string[] clavesRSA;
         private ApiService apiService = new ApiService("http://localhost:8080/");
+        private List<User> usuariosCompartir = new List<User>();
         public FileLockr()
         {
             InitializeComponent();
@@ -40,7 +41,7 @@ namespace practicaCys2
 
             if (!Directory.Exists(path3))
                 Directory.CreateDirectory(path3);
-           
+
 
 
         }
@@ -65,7 +66,7 @@ namespace practicaCys2
 
                 // Buscar el archivo de claves que coincide con el nombre base
                 string keysFilePath = Path.Combine(@"../../../../../claves/" + user + "/", $"{baseFileName}_keys.zip");
-               
+
                 if (!File.Exists(keysFilePath))
                 {
                     MessageBox.Show("No se encontró el archivo de claves correspondiente.");
@@ -176,7 +177,7 @@ namespace practicaCys2
             string passUsuario = textBoxPassword.Text;
             string user = textBoxUser.Text;
 
-            if (passUsuario == "" || user == "")
+            if (string.IsNullOrEmpty(passUsuario) || string.IsNullOrEmpty(user))
             {
                 MessageBox.Show("Complete los campos de inicio de sesión.");
                 panelListado.Visible = false;
@@ -185,56 +186,130 @@ namespace practicaCys2
                 return;
             }
 
+            // Hash y dividir la contraseña
             passUsuario = ComputeSha256Hash(passUsuario);
             (string kdatos, string passLogin) = DividirPorMitad(passUsuario);
             passLogin = Convert.ToBase64String(Encoding.UTF8.GetBytes(passLogin));
 
-            LoginResponse login = await apiService.LoginAsync(user, passLogin);
-
-            if (login.Token != null){ //login ok
-                apiService.SetAuthToken(login.Token);
-                int id = await apiService.GetUserId(user);
-                User usuario = await apiService.GetUser(id);
-                clavesRSA[0] = usuario.publicKey.Key;
-                clavesRSA[1] = usuario.privateKey.Key;
-            }
-            else //registrar el usuario
+            try
             {
-                compressAndEncrypt.GenerateRsaKeys(out publicKey, out privateKey);
-                clavesRSA = new string[2] { publicKey, privateKey };
+                // Intentar iniciar sesión
+                LoginResponse login = await apiService.LoginAsync(user, passLogin);
 
-                byte[] clavePublica = Encoding.UTF8.GetBytes(publicKey);
-                byte[] clavePrivada = compressAndEncrypt.EncryptPrivateKeyWithAes(clavesRSA[1], kdatos);
+                if (login.Status == "success") // Login exitoso
+                {
+                    apiService.SetAuthToken(login.Token);
+                    int id = await apiService.GetUserId(user);
+                    User usuario = await apiService.GetUser(id);
+                    clavesRSA[0] = usuario.publicKey.Key;
+                    clavesRSA[1] = usuario.privateKey.Key;
+                }
+                else if (login.Message == "Usuario no encontrado") // Usuario no existe
+                {
+                    var result = MessageBox.Show("El usuario no existe. ¿Desea registrarlo?", "Usuario no encontrado",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-                byte[] saltRegistro = GenerateSalt();
-                byte[] hashRegistro = GenerateHash(passLogin, saltRegistro);
+                    if (result == DialogResult.Yes)
+                    {
+                        // Generar claves RSA
+                        compressAndEncrypt.GenerateRsaKeys(out publicKey, out privateKey);
+                        clavesRSA = new string[2] { publicKey, privateKey };
 
-                string salRegistro = Convert.ToBase64String(saltRegistro);
-                string passRegistro = Convert.ToBase64String(hashRegistro);
-                Console.WriteLine("pass Registro: " + passRegistro);
-                Console.WriteLine("pass LOGIN: " + passLogin);
-                Console.WriteLine("SALT: " + salRegistro);
-                LoginResponse registro = await apiService.CreaUser  (user, passLogin, salRegistro, clavePublica, clavePrivada);
-                login = await apiService.LoginAsync(user, passLogin);
-                apiService.SetAuthToken(login.Token);
+                        // Crear claves públicas y privadas cifradas
+                        byte[] clavePublica = Encoding.UTF8.GetBytes(publicKey);
+                        byte[] clavePrivada = compressAndEncrypt.EncryptPrivateKeyWithAes(clavesRSA[1], kdatos);
+
+                        // Generar hash y salt para la contraseña
+                        byte[] saltRegistro = GenerateSalt();
+                        byte[] hashRegistro = GenerateHash(passLogin, saltRegistro);
+
+                        string salRegistro = Convert.ToBase64String(saltRegistro);
+                        string passRegistro = Convert.ToBase64String(hashRegistro);
+
+                        // Crear el usuario
+                        LoginResponse registro = await apiService.CreaUser(user, passLogin, salRegistro, clavePublica, clavePrivada);
+                        LoginResponse login2 = await apiService.LoginAsync(user, passLogin);
+                        apiService.SetAuthToken(login2.Token);
+                        int id = await apiService.GetUserId(user);
+                        User usuario = await apiService.GetUser(id);
+                        clavesRSA[0] = usuario.publicKey.Key;
+                        clavesRSA[1] = usuario.privateKey.Key;
+                        if (registro.Status == "success")
+                        {
+                            MessageBox.Show("Usuario registrado exitosamente. Puede iniciar sesión.");
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Error al registrar usuario: {registro.Message}");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                else if (login.Message == "Contraseña incorrecta") // Contraseña incorrecta
+                {
+                    MessageBox.Show("Contraseña incorrecta. Inténtelo nuevamente.");
+                    return;
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error durante el proceso de inicio de sesión: {ex.Message}");
+                return;
+            }
+
+            // Mostrar panel listado y ocultar otros si todo fue exitoso
             panelListado.Visible = true;
             panelAcceso.Visible = false;
             panelCifrado.Visible = false;
 
             listarArchivos();
-
         }
 
-        private void buttonCifrar_Click(object sender, EventArgs e)
+
+        private async void buttonCifrar_Click(object sender, EventArgs e)
         {
             panelListado.Visible = false;
             panelAcceso.Visible = false;
             panelCifrado.Visible = true;
             listaExaminados.Items.Clear();
+            usuariosCompartir.Clear();
+            List<User> usuarios = await apiService.GetUsersAsync();
+            listUsuarios.Items.Clear();
+            List<User> seleccionados = new List<User>();
+            foreach (var item in usuarios)
+            {
+                listUsuarios.Items.Add(item.nombre);
+                if (item.nombre == textBoxUser.Text)
+                    listUsuarios.SelectedItem = item.nombre;
+                
+            }
 
         }
 
+        private async void addUser( string nombre)
+        {
+            
+            int Iduser = await apiService.GetUserId(nombre);
+            User user= await apiService.GetUser(Iduser);
+            if (usuariosCompartir.Contains(user))
+            {
+                usuariosCompartir.Remove(user);
+                Console.WriteLine("Usuario eliminado: " + user.nombre);
+            }
+            else
+            {
+                usuariosCompartir.Add(user);
+                Console.WriteLine("Usuario añadido: " + user.nombre);
+            }
+            
+            
+        }
+
+        
         private void buttonExaminar_Click(object sender, EventArgs e)
         {
             // Crear un diálogo para seleccionar archivos
@@ -260,6 +335,7 @@ namespace practicaCys2
 
         private async void buttonConfirmar_Click(object sender, EventArgs e)
         {
+         
             if (listaExaminados.Items.Count > 0)
             {
                 string user = textBoxUser.Text;
@@ -317,11 +393,7 @@ namespace practicaCys2
 
                 File.WriteAllBytes(keysFilePath, compressedKeys);
                 int idUsuario = await apiService.GetUserId(user);
-                Console.WriteLine("idUsuario" + idUsuario);
-                Console.WriteLine("ruta: " + encryptedFilePath);
-                Console.WriteLine("iv: "+ ivString);
-                Console.WriteLine("kfile: " + kfile);
-                apiService.CreaFichero(encryptedFilePath, idUsuario,keysFilePath);
+                apiService.CreaFichero(encryptedFilePath, idUsuario, keysFilePath);
 
                 // Limpiar el ListBox después de confirmar
                 listaArchivos.Items.Clear();
@@ -351,9 +423,8 @@ namespace practicaCys2
         {
             listaArchivos.Items.Clear();
             string user = textBoxUser.Text;
-            int idUser= await apiService.GetUserId(user);
-            Console.WriteLine("usuario id " + idUser);
-            List<Fichero>  fnuevos = await apiService.getFicheros(idUser);
+            int idUser = await apiService.GetUserId(user);
+            List<Fichero> fnuevos = await apiService.getFicheros(idUser);
             string folderPath = @"../../../../../archivos/" + user + "/";
             foreach (Fichero item in fnuevos)
             {
@@ -361,33 +432,30 @@ namespace practicaCys2
                 ruta.Replace("../../../../../archivos/" + user + "/", "");
 
                 ruta.Replace("_encrypted.zip", "");
-                Console.WriteLine(item);
             }
             listaArchivos.Items.AddRange(fnuevos.Select(file => Path.GetFileName(file.ruta).Substring(0, Path.GetFileName(file.ruta).Length - "_encrypted.zip".Length)).ToArray());
         }
 
-        private async void btn_Compartir(object sender, EventArgs e)
-        {
-            panelUsuarios.Visible = true;
-            panelListado.Visible = false;
-            panelAcceso.Visible = false;
-            panelCifrado.Visible = false;
-            List<User> usuarios = await apiService.GetUsersAsync();
-            listUsuarios.Items.Clear();
-            Console.WriteLine("Usuarios obtenidos");
-            foreach (var item in usuarios)
-            {
-                listUsuarios.Items.Add(item.nombre);
-                if (item.nombre == textBoxUser.Text)
-                    listUsuarios.SelectedItem = item.nombre;
-                Console.WriteLine(item.nombre);
-                
-            }
-        }
+
 
         private async void compartir(object sender, EventArgs e)
         {
+
+        }
+
+        private void listUsuarios_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            usuariosCompartir.Clear();
+            if (listUsuarios.SelectedItem != null)
+            {
+                string selectedUser = listUsuarios.SelectedItem.ToString();
+                foreach(string user in listUsuarios.SelectedItems)
+                {
+                    addUser(user);
+                }
            
+               
+            }
         }
     }
 }

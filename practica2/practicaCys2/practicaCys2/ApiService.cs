@@ -35,7 +35,6 @@ public class ApiService
 
             // Leer y deserializar la respuesta
             var jsonResponse = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(jsonResponse); // Imprimir respuesta para depuración
 
             // Deserializar la respuesta en el tipo adecuado
             var result = JsonConvert.DeserializeObject<TResponse>(jsonResponse);
@@ -44,8 +43,6 @@ public class ApiService
         }
         catch (HttpRequestException httpEx)
         {
-            Console.WriteLine($"{_baseAddress}/{endpoint}");
-            Console.WriteLine($"Detalles del error HTTP: {httpEx.Message}");
             throw new Exception($"Error al realizar la solicitud: {httpEx.Message}", httpEx);
         }
         catch (Exception ex)
@@ -60,8 +57,7 @@ public class ApiService
         {
             // Realizar la solicitud GET
             var response = await _httpClient.GetAsync($"{_baseAddress}/{endpoint}");
-            Console.WriteLine("get async: " + response);
-            Console.WriteLine("Api Service, ruta:  " + $"{_baseAddress}/{endpoint}");
+  
             // Verificar si la respuesta es exitosa
             response.EnsureSuccessStatusCode();
 
@@ -85,8 +81,20 @@ public class ApiService
             clave = password
         };
 
-        // Usar el método POST para enviar las credenciales
-        return await PostAsync<object, LoginResponse>("auth/login", loginData);
+        var response = await PostAsync<object, LoginResponse>("auth/login", loginData);
+
+        // Manejar el resultado basado en el campo Status
+        switch (response.Status)
+        {
+            case "success":
+                break;
+            case "error":
+                break;
+            default:
+                throw new Exception("Respuesta inesperada del servidor.");
+        }
+
+        return response;
     }
 
     public async Task<LoginResponse> CreaUser(string username, string password, string salt,byte[] publicKey, byte[] privateKey)
@@ -113,7 +121,6 @@ public class ApiService
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
             throw new Exception($"Error al obtener la lista de usuarios: {ex.Message}");
         }
     }
@@ -133,7 +140,6 @@ public class ApiService
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
             throw new Exception($"Error al obtener la lista de ficheros: {ex.Message}");
         }
     }
@@ -147,7 +153,6 @@ public class ApiService
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
             throw new Exception($"Error al obtener la lista de ficheros: {ex.Message}");
         }
     }
@@ -168,7 +173,6 @@ public class ApiService
         try
         {
             // Llamar al método GET para obtener la lista de usuarios
-            Console.WriteLine("en get user id: " + username);
             User usuario = await GetAsync<User>($"usuario/{username}");
             
             return usuario.idUsuario;
@@ -176,7 +180,6 @@ public class ApiService
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
             throw new Exception($"Error al obtener el usuario: {ex.Message}");
         }
     }
@@ -207,7 +210,6 @@ public class ApiService
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
             throw new Exception($"Error al obtener la lista de ficheros: {ex.Message}");
         }
     }
@@ -216,8 +218,9 @@ public class ApiService
 
 public class LoginResponse
 {
-    public string Token { get; set; }
-    
+    public string Status { get; set; } // 'success' o 'error'
+    public string Message { get; set; } // Mensaje descriptivo ('Usuario no encontrado', 'Contraseña incorrecta')
+    public string Token { get; set; } // Token si el login es exitoso
 }
 
 public class User

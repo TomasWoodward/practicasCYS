@@ -127,4 +127,3 @@ exports.usuariosPOST = function(body) {
     });
   });
 }
-
