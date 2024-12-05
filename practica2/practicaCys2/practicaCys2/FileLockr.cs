@@ -200,8 +200,8 @@ namespace practicaCys2
                     apiService.SetAuthToken(login.Token);
                     int id = await apiService.GetUserId(user);
                     User usuario = await apiService.GetUser(id);
-                    clavesRSA[0] = usuario.publicKey.Key;
-                    clavesRSA[1] = usuario.privateKey.Key;
+                    clavesRSA[0] = usuario.publicKey;
+                    clavesRSA[1] = usuario.privateKey;
                 }
                 else if (login.Message == "Usuario no encontrado") // Usuario no existe
                 {
@@ -231,8 +231,8 @@ namespace practicaCys2
                         apiService.SetAuthToken(login2.Token);
                         int id = await apiService.GetUserId(user);
                         User usuario = await apiService.GetUser(id);
-                        clavesRSA[0] = usuario.publicKey.Key;
-                        clavesRSA[1] = usuario.privateKey.Key;
+                        clavesRSA[0] = usuario.publicKey;
+                        clavesRSA[1] = usuario.privateKey;
                         if (registro.Status == "success")
                         {
                             MessageBox.Show("Usuario registrado exitosamente. Puede iniciar sesión.");
@@ -375,9 +375,9 @@ namespace practicaCys2
 
                 foreach (User usuario in usuariosCompartir)
                 {
-                    Console.WriteLine("entra al for each: "+usuario.nombre + usuario.publicKey.Key);
-                    byte[] kfile = compressAndEncrypt.EncryptAesKeyWithRsa(key, usuario.publicKey.Key);
-                    byte[] ivUser = compressAndEncrypt.EncryptAesKeyWithRsa(iv, usuario.publicKey.Key);
+                    Console.WriteLine("entra al for each: "+usuario.nombre + usuario.publicKey);
+                    byte[] kfile = compressAndEncrypt.EncryptAesKeyWithRsa(key, usuario.publicKey);
+                    byte[] ivUser = compressAndEncrypt.EncryptAesKeyWithRsa(iv, usuario.publicKey);
                     string kfile2 = Encoding.UTF8.GetString(kfile);
                     string ivString = Encoding.UTF8.GetString(ivUser);
                     int idUsuario = await apiService.GetUserId(user);
@@ -416,14 +416,14 @@ namespace practicaCys2
             listaArchivos.Items.Clear();
             string user = textBoxUser.Text;
             int idUser = await apiService.GetUserId(user);
-            List<Fichero> fnuevos = await apiService.getFicheros(idUser);
+            List<FicheroGet> fnuevos = await apiService.getFicheros(idUser);
             if (fnuevos == null)
             {
                 MessageBox.Show("No se encontraron archivos para este usuario.");
             }
             else
             {
-                foreach (Fichero archivo in fnuevos)
+                foreach (FicheroGet archivo in fnuevos)
                 {
                     listaArchivos.Items.Add(archivo.nombre);
                 }

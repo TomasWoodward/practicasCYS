@@ -65,46 +65,8 @@ public class ApiService
 
             // Leer y deserializar la respuesta
             var jsonResponse = await response.Content.ReadAsStringAsync();
-            Console.WriteLine("get async: " + jsonResponse);
-           
-            if (typeof(TResponse) == typeof(User)){
-                
-                var userResponse = JsonConvert.DeserializeObject<User>(jsonResponse);
 
-                // Si publicKey o privateKey son buffers en formato JSON, asegúrate de convertirlos correctamente a una cadena
-                var userJson = JObject.Parse(jsonResponse);  // Usamos JObject para parsear el JSON
-                Console.WriteLine("ES ESTE: "+userJson["publicKey"]);
-                // Si existe una clave pública en el JSON, asignarla al objeto Key1
-                if (userJson["publicKey"] != null)
-                {
-                    var publicKey = userJson["publicKey"];
-                    var data = publicKey["data"];
-                    byte[] publicKeyValue = data.ToObject<byte[]>();
-                    userResponse.publicKey = new Key1
-                    {
-                        Type = "RSA", // Puedes cambiar esto si es necesario
-                        Key = Convert.ToBase64String(publicKeyValue) // Aquí aseguramos que la clave esté en Base64
-                    };
-                    Console.WriteLine("Clave pública en get async: " + userResponse.publicKey.Key);
-                }
-
-                // Si existe una clave privada en el JSON, asignarla al objeto Key1
-                if (userJson["privateKey"] != null)
-                {
-                    var privateKeyValue = userJson["privateKey"].ToString();
-                    userResponse.privateKey = new Key1
-                    {
-                        Type = "RSA", // Puedes cambiar esto si es necesario
-                        Key = Convert.ToBase64String(Convert.FromBase64String(privateKeyValue))  // Aquí aseguramos que la clave esté en Base64
-                    };
-                }
-                return (TResponse)(object)userResponse; // Hacer el cast a TResponse
-            }
-            else {
-                 var userResponse = JsonConvert.DeserializeObject<TResponse>(jsonResponse);
-                return (TResponse)(object)userResponse; // Hacer el cast a TResponse
-            }
-            
+            return JsonConvert.DeserializeObject<TResponse>(jsonResponse);
         }
         catch (Exception ex)
         {
@@ -171,12 +133,12 @@ public class ApiService
         _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
     }
 
-    public async Task<List<Fichero>> GetFicherosAsync()
+    public async Task<List<FicheroGet>> GetFicherosAsync()
     {
         try
         {
             // Llamar al método GET para obtener la lista de usuarios
-            return await GetAsync<List<Fichero>>("ficheros");
+            return await GetAsync<List<FicheroGet>>("ficheros");
         }
         catch (Exception ex)
         {
@@ -184,12 +146,12 @@ public class ApiService
         }
     }
 
-    public async Task<Fichero> GetFicheroAsync(int id)
+    public async Task<FicheroGet> GetFicheroAsync(int id)
     {
         try
         {
             // Llamar al método GET para obtener la lista de usuarios
-            return await GetAsync<Fichero>($"ficheros/{id}");
+            return await GetAsync<FicheroGet>($"ficheros/{id}");
         }
         catch (Exception ex)
         {
@@ -199,6 +161,7 @@ public class ApiService
 
     public async Task<FicheroResponse> CreaFichero(string nombre, byte[] archivo)
     {
+        
         var registerData = new
         {
             nombre = nombre,
@@ -249,12 +212,12 @@ public class ApiService
         };
         await PostAsync<object,FicheroResponse>("compartir", registerData);
     }
-    public async Task<List<Fichero>> getFicheros(int usuario)
+    public async Task<List<FicheroGet>> getFicheros(int usuario)
     {
         try
         {
 
-            List<Fichero> ficheros = await GetAsync<List<Fichero>>($"compartir/{usuario}");
+            List<FicheroGet> ficheros = await GetAsync<List<FicheroGet>>($"compartir/{usuario}");
 
             return ficheros;
         }
@@ -274,8 +237,10 @@ public class LoginResponse
 }
 public class FicheroResponse
 {
-    public int Id { get; set; }
     public string Message { get; set; }
+ 
+    public int Id { get; set; }
+    
 }
 public class User
 {
@@ -285,8 +250,8 @@ public class User
     public string clave { get; set; }
 
     public string salt { get; set; }
-    public Key1 publicKey { get; set; }
-    public Key1 privateKey { get; set; }
+    public string publicKey { get; set; }
+    public string privateKey { get; set; }
 }
 
 
@@ -296,15 +261,20 @@ public class Key1
     public string Key { get; set; }
 }
 
-public class Fichero
+public class FicheroPost
 {
     public int idFichero { get; set; }
     public string nombre { get; set; }
     public byte[] archivo { get; set; }
 }
-
+public class FicheroGet
+{
+    public int idFichero { get; set; }
+    public string nombre { get; set; }
+    public Archivo archivo { get; set; }
+}
 public class Archivo
 {
     public string type { get; set; }
-    public byte[] data { get; set; }
+    public string data { get; set; }
 }

@@ -81,7 +81,6 @@ exports.authLoginPOST = function (body) {
 
       try {
         const hashedPassword = await hashPassword(password, salt);
-        console.log('Hash generado en login:', hashedPassword);
 
         if (!compareHashes(hashedPassword, user.clave)) {
           console.log('Contraseña incorrecta');

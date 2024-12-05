@@ -96,7 +96,6 @@ exports.ficherosIdFicheroPUT = function(body,idFichero) {
  * returns Fichero
  **/
 exports.ficherosPOST = function(body) {
-  console.log("body: ",body);
   return new Promise(function(resolve, reject) {
     const {nombre,archivo} = body;
     console.log("nombre: ",nombre);

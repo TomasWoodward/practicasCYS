@@ -44,7 +44,6 @@ module.exports.ficherosIdFicheroPUT = function ficherosIdFicheroPUT (req, res, n
 };
 
 module.exports.ficherosPOST = function ficherosPOST (req, res, next, body) {
-  console.log("entra al controlador de ficherosPOST");
   Fichero.ficherosPOST(body)
     .then(function (response) {
       utils.writeJson(res, response);

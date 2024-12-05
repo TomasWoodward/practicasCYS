@@ -59,7 +59,6 @@ exports.usuariosIdUsuarioGET = function(idUsuario) {
         } else if (results.length === 0) {
           reject(error);
         } else {
-          console.log("Usuario encontrado ", results[0].publicKey);
           resolve(results[0]);
         }
       });
@@ -70,7 +69,6 @@ exports.usuariosIdUsuarioGET = function(idUsuario) {
 
 exports.getIdUsuario = function(nombre) {
   return new Promise(function(resolve, reject) {
-    console.log("Entra al servicio de usuario ", nombre);
     const query = 'SELECT * FROM usuarios WHERE nombre = ?';
     
     db.query(query, [nombre], (error, results) => {
@@ -116,10 +114,10 @@ exports.usuariosIdUsuarioPUT = function(body,idUsuario) {
  **/
 exports.usuariosPOST = function(body) {
   return new Promise(function(resolve, reject) {
-    const { nombre, clave ,publicKey} = body;
-    const query = 'INSERT INTO usuarios (nombre, clave , publicKey) VALUES (?,?, ?)';
+    const { nombre, clave ,salt,publicKey,privateKey} = body;
+    const query = 'INSERT INTO usuarios (nombre, clave ,salt, publicKey, privateKey) VALUES (?,?, ?,?,?)';
     
-    db.query(query, [nombre, clave, publicKey], (error, results) => {
+    db.query(query, [nombre, clave,salt, publicKey,privateKey], (error, results) => {
       if (error) {
         reject(error);
       } else {
