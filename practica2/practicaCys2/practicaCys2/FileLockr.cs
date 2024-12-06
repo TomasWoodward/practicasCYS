@@ -19,6 +19,7 @@ namespace practicaCys2
         private string[] clavesRSA;
         private ApiService apiService = new ApiService("http://localhost:8080/");
         private List<User> usuariosCompartir = new List<User>();
+        private List<FicheroGet> ficheros = new List<FicheroGet>();
         public FileLockr()
         {
             InitializeComponent();
@@ -46,65 +47,63 @@ namespace practicaCys2
         }
 
 
-        private void btn_Abrir_Click(object sender, EventArgs e)
+        private async void btn_Abrir_Click(object sender, EventArgs e)
         {
             compressAndEncrypt decryptAes = new compressAndEncrypt();
             string user = textBoxUser.Text;
+            int userId = await apiService.GetUserId(user);
             if (listaArchivos.SelectedItem != null)
             {
-                string filePath = "../../../../../archivos/" + user + "/" + listaArchivos.SelectedItem.ToString() + "_encrypted.zip";
-                string baseFileName = Path.GetFileNameWithoutExtension(filePath).Replace("_encrypted", "");
-                //baseFileName = "../../../../"+;
-                // Leer el archivo encriptado como bytes
-                if (!File.Exists(filePath))
+
+                string outputPath = "";
+                using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
                 {
-                    MessageBox.Show("No se encontró el archivo en el dispositivo.");
-                    return;
+                    folderDialog.Description = "Selecciona la carpeta donde deseas guardar los archivos descomprimidos";
+                    folderDialog.ShowNewFolderButton = true;
+
+                    if (folderDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        outputPath = folderDialog.SelectedPath;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Operación cancelada por el usuario.");
+                    }
                 }
-                byte[] encryptedFile = File.ReadAllBytes(filePath);
-
-                // Buscar el archivo de claves que coincide con el nombre base
-                string keysFilePath = Path.Combine(@"../../../../../claves/" + user + "/", $"{baseFileName}_keys.zip");
-
-                if (!File.Exists(keysFilePath))
+                FicheroGet encryptedFile;
+                foreach (FicheroGet item in ficheros)
                 {
-                    MessageBox.Show("No se encontró el archivo de claves correspondiente.");
-                    return;
+                    if (listaArchivos.SelectedItem == item.nombre)
+                    {
+                        encryptedFile = item;
+                        // Buscar el archivo de claves que coincide con el nombre base
+
+                        Compartir keys = await apiService.getFicheroClaves(encryptedFile.idFichero,userId);
+                        Console.WriteLine("Objeto compartir recibido");
+                        // Obtener la clave (Kfile) y el IV desde el archivo comprimido
+                        byte[] key = Convert.FromBase64String(keys.kfile);
+                        byte[] iv = Convert.FromBase64String(keys.iv);
+
+                        key = decryptAes.DecryptAesKeyWithRsa(key, clavesRSA[1]);
+                        iv = decryptAes.DecryptAesKeyWithRsa(iv, clavesRSA[1]);
+                        // Desencriptar el archivo
+                        byte[] decryptedFile = decryptAes.DecryptAes(encryptedFile.archivo.data, key, iv);
+
+                        // Descomprimir el archivo desencriptado
+                        Dictionary<string, byte[]> decompressedFiles = decryptAes.DecompressFiles(decryptedFile);
+
+                        // Guardar los archivos descomprimidos
+                        if (!Directory.Exists(outputPath))
+                            Directory.CreateDirectory(outputPath);
+
+                        foreach (var file in decompressedFiles)
+                        {
+                            File.WriteAllBytes(Path.Combine(outputPath, file.Key), file.Value);
+                        }
+                        Process.Start("explorer.exe", outputPath);
+                    }
                 }
-
-                // Leer y descomprimir las claves del archivo ZIP
-                byte[] compressedKeys = File.ReadAllBytes(keysFilePath);
-                Dictionary<string, byte[]> keys = decryptAes.DecompressFiles(compressedKeys);
-
-                if (keys == null || !keys.ContainsKey("Kfile") || !keys.ContainsKey("IV"))
-                {
-                    MessageBox.Show("Error al leer las claves comprimidas.");
-                    return;
-                }
-
-                // Obtener la clave (Kfile) y el IV desde el archivo comprimido
-                byte[] key = keys["Kfile"];
-                byte[] iv = keys["IV"];
-
-                key = decryptAes.DecryptAesKeyWithRsa(key, clavesRSA[1]);
-                iv = decryptAes.DecryptAesKeyWithRsa(iv, clavesRSA[1]);
-                // Desencriptar el archivo
-                byte[] decryptedFile = decryptAes.DecryptAes(encryptedFile, key, iv);
-
-                // Descomprimir el archivo desencriptado
-                Dictionary<string, byte[]> decompressedFiles = decryptAes.DecompressFiles(decryptedFile);
-
-                // Guardar los archivos descomprimidos
-                string outputPath = @"../../../../../archivos_descomprimidos/" + user + "/";
-                if (!Directory.Exists(outputPath))
-                    Directory.CreateDirectory(outputPath);
-
-                foreach (var file in decompressedFiles)
-                {
-                    File.WriteAllBytes(Path.Combine(outputPath, file.Key), file.Value);
-                }
-                outputPath = Path.GetFullPath(@"../../../../../archivos_descomprimidos/" + user + "/");
-                Process.Start("explorer.exe", outputPath);
+                
             }
         }
 
@@ -201,7 +200,7 @@ namespace practicaCys2
                     int id = await apiService.GetUserId(user);
                     User usuario = await apiService.GetUser(id);
                     clavesRSA[0] = usuario.publicKey;
-                    clavesRSA[1] = usuario.privateKey;
+                    clavesRSA[1] = Convert.ToBase64String(usuario.privateKey.data);
                 }
                 else if (login.Message == "Usuario no encontrado") // Usuario no existe
                 {
@@ -217,7 +216,7 @@ namespace practicaCys2
                         // Crear claves públicas y privadas cifradas
                         byte[] clavePublica = Encoding.UTF8.GetBytes(publicKey);
                         byte[] clavePrivada = compressAndEncrypt.EncryptPrivateKeyWithAes(clavesRSA[1], kdatos);
-
+                        Key1 privateKeyObj = new Key1 { type = "RSA", data = clavePrivada };
                         // Generar hash y salt para la contraseña
                         byte[] saltRegistro = GenerateSalt();
                         byte[] hashRegistro = GenerateHash(passLogin, saltRegistro);
@@ -226,13 +225,13 @@ namespace practicaCys2
                         string passRegistro = Convert.ToBase64String(hashRegistro);
 
                         // Crear el usuario
-                        LoginResponse registro = await apiService.CreaUser(user, passLogin, salRegistro, clavePublica, clavePrivada);
+                        LoginResponse registro = await apiService.CreaUser(user, passLogin, salRegistro, publicKey, privateKeyObj);
                         LoginResponse login2 = await apiService.LoginAsync(user, passLogin);
                         apiService.SetAuthToken(login2.Token);
                         int id = await apiService.GetUserId(user);
                         User usuario = await apiService.GetUser(id);
                         clavesRSA[0] = usuario.publicKey;
-                        clavesRSA[1] = usuario.privateKey;
+                        clavesRSA[1] = Convert.ToBase64String(usuario.privateKey.data);
                         if (registro.Status == "success")
                         {
                             MessageBox.Show("Usuario registrado exitosamente. Puede iniciar sesión.");
@@ -375,12 +374,12 @@ namespace practicaCys2
 
                 foreach (User usuario in usuariosCompartir)
                 {
-                    Console.WriteLine("entra al for each: "+usuario.nombre + usuario.publicKey);
+                    Console.WriteLine("entra al for each: "+usuario.nombre);
                     byte[] kfile = compressAndEncrypt.EncryptAesKeyWithRsa(key, usuario.publicKey);
                     byte[] ivUser = compressAndEncrypt.EncryptAesKeyWithRsa(iv, usuario.publicKey);
-                    string kfile2 = Encoding.UTF8.GetString(kfile);
-                    string ivString = Encoding.UTF8.GetString(ivUser);
-                    int idUsuario = await apiService.GetUserId(user);
+                    string kfile2 = Convert.ToBase64String(kfile);
+                    string ivString = Convert.ToBase64String(ivUser);
+                    int idUsuario = await apiService.GetUserId(usuario.nombre);
 
                     apiService.CompartirFichero(idFichero, idUsuario, kfile2, ivString);
                 }
@@ -414,6 +413,7 @@ namespace practicaCys2
         private async void listarArchivos()
         {
             listaArchivos.Items.Clear();
+            ficheros.Clear();   
             string user = textBoxUser.Text;
             int idUser = await apiService.GetUserId(user);
             List<FicheroGet> fnuevos = await apiService.getFicheros(idUser);
@@ -425,6 +425,7 @@ namespace practicaCys2
             {
                 foreach (FicheroGet archivo in fnuevos)
                 {
+                    ficheros.Add(archivo);
                     listaArchivos.Items.Add(archivo.nombre);
                 }
 

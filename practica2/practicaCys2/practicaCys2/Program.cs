@@ -200,6 +200,7 @@ namespace practicaCys2
 
             using (RSA rsa = RSA.Create())
             {
+                Console.WriteLine("clave privada en program cs: "+privateKey);
                 rsa.ImportRSAPrivateKey(Convert.FromBase64String(privateKey), out _);
                 decryptedKey = rsa.Decrypt(encryptedAesKey, RSAEncryptionPadding.OaepSHA256);
             }
@@ -228,7 +229,7 @@ namespace practicaCys2
         public byte[] EncryptPrivateKeyWithAes(string privateKey, string password)
         {
             byte[] encryptedPrivateKey;
-            byte[] privateKeyBytes = Encoding.UTF8.GetBytes(privateKey);
+            byte[] privateKeyBytes = Convert.FromBase64String(privateKey);
 
             using (Aes aes = Aes.Create())
             {

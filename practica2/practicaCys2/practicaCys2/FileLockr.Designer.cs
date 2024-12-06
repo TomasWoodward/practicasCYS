@@ -40,6 +40,7 @@ namespace practicaCys2
             pictureBox1 = new PictureBox();
             labelPassword = new Label();
             panelCifrado = new Panel();
+            label15 = new Label();
             listUsuarios = new ListBox();
             textBoxNombreArchivo = new TextBox();
             panel3 = new Panel();
@@ -53,7 +54,6 @@ namespace practicaCys2
             buttonExaminar = new Button();
             listaExaminados = new ListBox();
             panelListado = new Panel();
-            button1 = new Button();
             label11 = new Label();
             panel2 = new Panel();
             label7 = new Label();
@@ -62,7 +62,6 @@ namespace practicaCys2
             label1 = new Label();
             buttonCifrar = new Button();
             listaArchivos = new ListBox();
-            label15 = new Label();
             panelAcceso.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
@@ -254,6 +253,17 @@ namespace practicaCys2
             panelCifrado.Size = new Size(934, 533);
             panelCifrado.TabIndex = 3;
             // 
+            // label15
+            // 
+            label15.AutoSize = true;
+            label15.Font = new Font("Tahoma", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label15.ForeColor = SystemColors.ButtonHighlight;
+            label15.Location = new Point(310, 459);
+            label15.Name = "label15";
+            label15.Size = new Size(284, 21);
+            label15.TabIndex = 9;
+            label15.Text = "Selecciona un usuario para compartir";
+            // 
             // listUsuarios
             // 
             listUsuarios.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
@@ -422,7 +432,6 @@ namespace practicaCys2
             // panelListado
             // 
             panelListado.BackColor = Color.FromArgb(5, 57, 91);
-            panelListado.Controls.Add(button1);
             panelListado.Controls.Add(label11);
             panelListado.Controls.Add(panel2);
             panelListado.Controls.Add(buttonCifrar);
@@ -435,32 +444,17 @@ namespace practicaCys2
             panelListado.Size = new Size(934, 533);
             panelListado.TabIndex = 2;
             // 
-            // button1
-            // 
-            button1.BackColor = SystemColors.ButtonHighlight;
-            button1.FlatAppearance.BorderSize = 0;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Tahoma", 10.2F);
-            button1.Location = new Point(36, 85);
-            button1.Margin = new Padding(3, 4, 3, 4);
-            button1.Name = "button1";
-            button1.Size = new Size(100, 40);
-            button1.TabIndex = 7;
-            button1.Text = "Abrir";
-            button1.UseVisualStyleBackColor = false;
-            button1.Click += btn_Abrir_Click;
-            // 
             // label11
             // 
             label11.Anchor = AnchorStyles.Bottom;
             label11.AutoSize = true;
             label11.Font = new Font("Tahoma", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label11.ForeColor = SystemColors.ButtonHighlight;
-            label11.Location = new Point(285, 483);
+            label11.Location = new Point(310, 480);
             label11.Name = "label11";
-            label11.Size = new Size(356, 22);
+            label11.Size = new Size(274, 22);
             label11.TabIndex = 5;
-            label11.Text = "Selecciona un archivo para abrir o compartir";
+            label11.Text = "Selecciona un archivo para abrirlo";
             // 
             // panel2
             // 
@@ -554,17 +548,7 @@ namespace practicaCys2
             listaArchivos.Name = "listaArchivos";
             listaArchivos.Size = new Size(864, 286);
             listaArchivos.TabIndex = 0;
-            // 
-            // label15
-            // 
-            label15.AutoSize = true;
-            label15.Font = new Font("Tahoma", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label15.ForeColor = SystemColors.ButtonHighlight;
-            label15.Location = new Point(310, 459);
-            label15.Name = "label15";
-            label15.Size = new Size(284, 21);
-            label15.TabIndex = 9;
-            label15.Text = "Selecciona un usuario para compartir";
+            listaArchivos.SelectedIndexChanged += btn_Abrir_Click;
             // 
             // FileLockr
             // 
@@ -573,9 +557,9 @@ namespace practicaCys2
             AutoSize = true;
             BackColor = SystemColors.ButtonHighlight;
             ClientSize = new Size(934, 533);
+            Controls.Add(panelListado);
             Controls.Add(panelCifrado);
             Controls.Add(panelAcceso);
-            Controls.Add(panelListado);
             Margin = new Padding(3, 4, 3, 4);
             MinimumSize = new Size(950, 572);
             Name = "FileLockr";
@@ -635,7 +619,6 @@ namespace practicaCys2
         private Label label10;
         private TextBox textBoxNombreArchivo;
         private Label label11;
-        private Button button1;
         private ListBox listUsuarios;
         private Label label15;
     }

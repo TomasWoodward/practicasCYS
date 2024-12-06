@@ -10,6 +10,7 @@ const db=require('../db.js');
 exports.compartir = function(body) {
   return new Promise(function(resolve, reject) {
     const {archivo,usuario,kfile,iv} = body;
+    console.log('Compartir fichero');
     const query = 'INSERT INTO compartidos (archivo,usuario,kfile,iv) VALUES (?,?,?,?)';
     
     db.query(query, [archivo,usuario,kfile,iv], (error, results) => {
@@ -17,6 +18,22 @@ exports.compartir = function(body) {
         reject(error);
       } else {
         resolve({ message: 'Fichero compartido correctamente', id: results.insertId });
+      }
+    });
+  });
+}
+
+exports.compartirGET = function(idFichero, idUsuario) {
+  return new Promise(function(resolve, reject) {
+  
+    console.log('Encontrar fichero por usuario y fichero');
+    const query = 'SELECT * FROM compartidos WHERE archivo = ? and usuario = ?';
+    
+    db.query(query, [idFichero, idUsuario], (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(results[0]);
       }
     });
   });

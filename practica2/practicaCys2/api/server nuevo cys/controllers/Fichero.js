@@ -22,6 +22,16 @@ module.exports.ficherosIdFicheroDELETE = function ficherosIdFicheroDELETE (req, 
       utils.writeJson(res, response);
     });
 };
+module.exports.getIdFichero = function getIdFichero (req, res, next, nombre) {
+  Usuario.getIdFichero(nombre)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 
 module.exports.ficherosIdFicheroGET = function ficherosIdFicheroGET (req, res, next, idFichero) {
   Fichero.ficherosIdFicheroGET(idFichero)

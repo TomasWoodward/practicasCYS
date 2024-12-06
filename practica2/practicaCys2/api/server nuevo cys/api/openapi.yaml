@@ -293,6 +293,32 @@ paths:
       security:
       - bearerAuth: []
       x-swagger-router-controller: Fichero
+  /ficheros/{nombre}:
+    get:
+      tags:
+      - Fichero
+      summary: Obtener un fichero por nombre
+      operationId: getIdFichero
+      parameters:
+      - name: nombre
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Fichero encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fichero'
+        "404":
+          description: Usuario no encontrado
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Fichero
   /compartir:
     post:
       tags:
@@ -312,6 +338,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Compartir'
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Compartir
+    get:
+      summary: Busca un archivo compartido por ID de fichero e ID de usuario
+      description: Devuelve el registro en la tabla compartidos que coincide con los IDs proporcionados.
+      operationId: compartirGET
+      parameters:
+        - name: idFichero
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: El ID del fichero a buscar
+        - name: idUsuario
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: El ID del usuario asociado al fichero
+      responses:
+        '200':
+          description: Registro encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Compartir'
+        '404':
+          description: No se encontró el registro
+        '500':
+          description: Error del servidor
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Compartir
   /compartir/{usuario}:
     get:
       tags:
@@ -362,7 +422,6 @@ components:
         publicKey:
           type: string
           description: Clave pública del usuario
-          format: binary
         privateKey:
           type: string
           description: Clave privada del usuario
@@ -415,8 +474,8 @@ components:
     Compartir:
       required:
       - archivo
-      - kfile
       - usuario
+      - kfile
       - iv
       type: object
       properties:

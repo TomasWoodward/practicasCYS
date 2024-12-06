@@ -92,7 +92,7 @@ exports.getIdUsuario = function(nombre) {
  **/
 exports.usuariosIdUsuarioPUT = function(body,idUsuario) {
   return new Promise(function(resolve, reject) {
-    const { nombre, usuario, clave} = body;
+    const { nombre, clave} = body;
     const query = 'UPDATE usuarios SET nombre = ?, clave = ? WHERE idUsuario = ?';
     
     db.query(query, [nombre, clave, idUsuario], (error, results) => {

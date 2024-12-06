@@ -42,6 +42,21 @@ exports.ficherosIdFicheroDELETE = function(idFichero) {
   });
 }
 
+exports.getIdFichero = function(nombre) {
+  return new Promise(function(resolve, reject) {
+    const query = 'SELECT * FROM fichero WHERE nombre = ?';
+    
+    db.query(query, [nombre], (error, results) => {
+      if (error) {
+        reject(error);
+      } else if (results.length === 0) {
+        reject(error);
+      } else {
+        resolve(results[0]);
+      }
+    });
+  });
+}
 
 /**
  * Obtener un fichero por ID

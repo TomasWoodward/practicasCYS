@@ -30,8 +30,7 @@ public class ApiService
 
             // Realizar la solicitud POST
             var response = await _httpClient.PostAsync($"{_baseAddress}/{endpoint}", content);
-            Console.WriteLine($"{_baseAddress}/{endpoint}   " + jsonContent);
-            Console.WriteLine(response);
+            
             // Verificar si la respuesta es exitosa
             response.EnsureSuccessStatusCode();
 
@@ -59,7 +58,6 @@ public class ApiService
         {
             // Realizar la solicitud GET
             var response = await _httpClient.GetAsync($"{_baseAddress}/{endpoint}");
-
             // Verificar si la respuesta es exitosa
             response.EnsureSuccessStatusCode();
 
@@ -99,7 +97,7 @@ public class ApiService
         return response;
     }
 
-    public async Task<LoginResponse> CreaUser(string username, string password, string salt,byte[] publicKey, byte[] privateKey)
+    public async Task<LoginResponse> CreaUser(string username, string password, string salt,string publicKey, Key1 privateKey)
     {
         var registerData = new
         {
@@ -107,7 +105,7 @@ public class ApiService
             clave = password,
             salt = salt,
             publicKey = publicKey,
-            privateKey = privateKey
+            privateKey = privateKey.data
         };
 
         // Usar el método POST para enviar las credenciales
@@ -159,6 +157,21 @@ public class ApiService
         }
     }
 
+    public async Task<int> GetFicheroId(string nombre)
+    {
+        try
+        {
+            // Llamar al método GET para obtener la lista de usuarios
+           FicheroGet fichero = await GetAsync<FicheroGet>($"ficheros/{nombre}");
+
+            return fichero.idFichero;
+
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error al obtener el usuario: {ex.Message}");
+        }
+    }
     public async Task<FicheroResponse> CreaFichero(string nombre, byte[] archivo)
     {
         
@@ -191,7 +204,6 @@ public class ApiService
         try
         {
             User usuario = await GetAsync<User>($"usuarios/{id}");
-            Console.WriteLine("clave publica " + usuario.nombre);
             return usuario;
 
         }
@@ -202,9 +214,10 @@ public class ApiService
     }
     public async void CompartirFichero(int id,int user,string kfile,string iv)
     {
+        Console.WriteLine("contenido recibido en compartir fichero: " + id + user + kfile + iv);
         var registerData = new
         {
-            idFichero = id,
+            archivo = id,
             usuario = user,
             kfile = kfile,
             iv = iv
@@ -220,6 +233,20 @@ public class ApiService
             List<FicheroGet> ficheros = await GetAsync<List<FicheroGet>>($"compartir/{usuario}");
 
             return ficheros;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error al obtener la lista de ficheros: {ex.Message}");
+        }
+    }
+
+    public async Task<Compartir> getFicheroClaves(int idFichero,int idUsuario)
+    {
+        try
+        {
+            Compartir fichero = await GetAsync<Compartir>($"compartir?idFichero={idFichero}&idUsuario={idUsuario}");
+
+            return fichero;
         }
         catch (Exception ex)
         {
@@ -251,14 +278,14 @@ public class User
 
     public string salt { get; set; }
     public string publicKey { get; set; }
-    public string privateKey { get; set; }
+    public Key1 privateKey { get; set; }
 }
 
 
 public class Key1
 {
-    public string Type { get; set; }
-    public string Key { get; set; }
+    public string type { get; set; }
+    public byte[] data { get; set; }
 }
 
 public class FicheroPost
@@ -276,5 +303,13 @@ public class FicheroGet
 public class Archivo
 {
     public string type { get; set; }
-    public string data { get; set; }
+    public byte[] data { get; set; }
+}
+
+public class Compartir
+{
+    public int archivo { get; set; }
+    public int usuario { get; set; }
+    public string kfile { get; set; }
+    public string iv { get; set; }
 }

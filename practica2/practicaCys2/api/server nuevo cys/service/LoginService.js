@@ -55,7 +55,6 @@ function compareHashes(hash1, hash2) {
 
 
 exports.authLoginPOST = function (body) {
-  console.log('Entra al servicio de login');
   return new Promise(function (resolve, reject) {
     const { nombre, clave } = body;
 
@@ -71,7 +70,6 @@ exports.authLoginPOST = function (body) {
       }
 
       if (results.length === 0) {
-        console.log('Usuario no encontrado');
         return resolve({ status: 'error', message: 'Usuario no encontrado' });
       }
 
@@ -83,7 +81,6 @@ exports.authLoginPOST = function (body) {
         const hashedPassword = await hashPassword(password, salt);
 
         if (!compareHashes(hashedPassword, user.clave)) {
-          console.log('Contraseña incorrecta');
           return resolve({ status: 'error', message: 'Contraseña incorrecta' });
         }
 
@@ -104,7 +101,6 @@ exports.authLoginPOST = function (body) {
 exports.authRegisterPOST = function (body) {
   return new Promise(async function (resolve, reject) {
     const { nombre, clave, salt, publicKey, privateKey } = body;
-
     // Verificar que los datos requeridos estén presentes
     if (!nombre || !clave || !salt || !publicKey || !privateKey) {
       return resolve({
@@ -134,7 +130,6 @@ exports.authRegisterPOST = function (body) {
 
         // Crear el hash de la contraseña
         const hashedPassword = await hashPassword(clave, salt);
-        console.log('Hash generado en registro:', hashedPassword);
         // Insertar el nuevo usuario en la base de datos
         const insertQuery = 'INSERT INTO usuarios (nombre, clave, salt, publicKey, privateKey) VALUES (?, ?, ?, ?, ?)';
         db.query(insertQuery, [nombre, hashedPassword, salt, publicKey, privateKey], function (error, results) {
