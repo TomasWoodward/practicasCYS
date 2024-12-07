@@ -113,16 +113,18 @@ exports.ficherosIdFicheroPUT = function(body,idFichero) {
 exports.ficherosPOST = function(body) {
   return new Promise(function(resolve, reject) {
     const {nombre,archivo} = body;
-    console.log("nombre: ",nombre);
-    console.log("archivo: ",archivo);
-
+    
     const query = 'INSERT INTO fichero (nombre, archivo) VALUES (?,?)';
     
     db.query(query, [nombre,archivo], (error, results) => {
       if (error) {
+        console.log("ERROR AL POST FICHERO: ",error);
+        
         reject(error);
       } else {
-        resolve({ message: 'Fichero creado correctamente', id: results.insertId });
+        console.log("ID FICHERO: ",results.insertId); 
+        
+        resolve({ message: 'Fichero creado correctamente', Id: results.insertId });
       }
     });
   });

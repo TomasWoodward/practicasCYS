@@ -445,7 +445,6 @@ components:
         archivo:
           type: string
           description: Datos del fichero
-          format: binary
         nombre:
           type: string
           description: nombre del fichero
