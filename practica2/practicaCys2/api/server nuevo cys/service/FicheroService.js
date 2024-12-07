@@ -1,6 +1,6 @@
 'use strict';
 const db=require('../db.js');
-
+const upload = require('../upload');
 
 /**
  * Obtener todos los ficheros
@@ -110,23 +110,35 @@ exports.ficherosIdFicheroPUT = function(body,idFichero) {
  * body Fichero 
  * returns Fichero
  **/
-exports.ficherosPOST = function(body) {
-  return new Promise(function(resolve, reject) {
-    const {nombre,archivo} = body;
-    
-    const query = 'INSERT INTO fichero (nombre, archivo) VALUES (?,?)';
-    
-    db.query(query, [nombre,archivo], (error, results) => {
-      if (error) {
-        console.log("ERROR AL POST FICHERO: ",error);
-        
-        reject(error);
-      } else {
-        console.log("ID FICHERO: ",results.insertId); 
-        
-        resolve({ message: 'Fichero creado correctamente', Id: results.insertId });
+exports.ficherosPOST = function (req, res,body) {
+  upload.single('archivo')(req, res, (err) => {
+      if (err) {
+          console.log("Error al subir archivo: ", err);
+          return res.status(500).json({ message: 'Error al subir archivo', error: err });
       }
-    });
-  });
-}
 
+      const { nombre } = req.body; // Captura el nombre enviado en el formulario
+      const archivo = req.file; // Captura información del archivo subido
+
+      if (!archivo) {
+          return res.status(400).json({ message: 'No se recibió un archivo' });
+      }
+
+      const rutaArchivo = archivo.path; // Ruta completa del archivo en el servidor
+
+      // Inserta el nombre y la ruta del archivo en la base de datos
+      const query = 'INSERT INTO fichero (nombre, archivo) VALUES (?, ?)';
+      db.query(query, [nombre, rutaArchivo], (error, results) => {
+          if (error) {
+              console.log("Error al guardar en la base de datos: ", error);
+              return res.status(500).json({ message: 'Error al guardar en la base de datos', error });
+          } else {
+              res.status(201).json({
+                  message: 'Fichero creado correctamente',
+                  id: results.insertId,
+                  ruta: rutaArchivo,
+              });
+          }
+      });
+  });
+};
